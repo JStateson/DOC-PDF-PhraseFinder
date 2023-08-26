@@ -1,4 +1,4 @@
-# PDF-PhraseFinder
+# DOC-PDF-PhraseFinder
 
 Program searchs through a PDF or DOCX and displays matches
 
