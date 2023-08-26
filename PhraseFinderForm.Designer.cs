@@ -36,6 +36,7 @@ namespace PDF_PhraseFinder
             MStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             openToolStripMenuItem = new ToolStripMenuItem();
+            OpenWord = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
@@ -100,7 +101,7 @@ namespace PDF_PhraseFinder
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openToolStripMenuItem, exitToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openToolStripMenuItem, OpenWord, exitToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(37, 20);
             fileToolStripMenuItem.Text = "File";
@@ -108,14 +109,21 @@ namespace PDF_PhraseFinder
             // openToolStripMenuItem
             // 
             openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(103, 22);
-            openToolStripMenuItem.Text = "Open";
+            openToolStripMenuItem.Size = new Size(131, 22);
+            openToolStripMenuItem.Text = "Open PDF";
             openToolStripMenuItem.Click += openToolStripMenuItem_Click;
+            // 
+            // OpenWord
+            // 
+            OpenWord.Name = "OpenWord";
+            OpenWord.Size = new Size(131, 22);
+            OpenWord.Text = "Open DOC";
+            OpenWord.Click += OpenWord_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(103, 22);
+            exitToolStripMenuItem.Size = new Size(131, 22);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
@@ -577,5 +585,6 @@ namespace PDF_PhraseFinder
         private GroupBox groupBox10;
         private TextBox tbZoomPCT;
         private ComboBox cbZoom;
+        private ToolStripMenuItem OpenWord;
     }
 }

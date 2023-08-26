@@ -11,6 +11,12 @@ using System.ComponentModel;
 using System.Configuration;
 using System.Reflection;
 using System.Windows.Forms;
+
+using Word = Microsoft.Office.Interop.Word;
+using Microsoft.Office.Interop.Word;
+using System.Reflection.Metadata;
+using System;
+
 //using System.Timers;
 
 
@@ -56,6 +62,9 @@ namespace PDF_PhraseFinder
         private int iCurrentRow = 0;
         private int[] SrtIndex;
 
+        private Microsoft.Office.Interop.Word.Application oWord;
+        private Microsoft.Office.Interop.Word.Document oDoc;
+        private bool DoingPDF = true;
 
         private List<cPhraseTable> phlist = new List<cPhraseTable>();   // table of phrases
         private cLocalSettings LocalSettings = new cLocalSettings();    // table of settings
@@ -131,6 +140,14 @@ namespace PDF_PhraseFinder
             return TotalPDFPages > 0;
         }
 
+        private bool DOCGetPageCount()
+        {
+            TotalPDFPages = oDoc.ComputeStatistics(WdStatistic.wdStatisticPages, false);
+            pbarLoading.Maximum = TotalPDFPages;
+            tbNumPages.Text = TotalPDFPages.ToString();
+            return TotalPDFPages > 0;
+        }
+
         /// <summary>
         /// user click the file open so help them find a pdf and
         /// report some success or failure
@@ -139,7 +156,6 @@ namespace PDF_PhraseFinder
         /// <param name="e"></param>
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             ofd = new OpenFileDialog();
             ofd.DefaultExt = "*pdf";
             ofd.InitialDirectory = LocalSettings.strLastFolder;
@@ -176,7 +192,7 @@ namespace PDF_PhraseFinder
             tbMatches.Text += "Document Open for searching\r\n";
             searchPanel.Enabled = GetPageCount();
             gbPageCtrl.Visible = searchPanel.Enabled;
-            pbarLoading.Maximum = TotalPDFPages;
+            DoingPDF = true;
         }
 
         /// <summary>
@@ -201,7 +217,7 @@ namespace PDF_PhraseFinder
             pbarLoading.Increment(1);
             pbarLoading.Update();
             pbarLoading.Refresh();
-            Application.DoEvents();
+            System.Windows.Forms.Application.DoEvents();
         }
 
         //open file needs adobe professional (not always found) in addition to badly formed PDFs
@@ -242,6 +258,37 @@ namespace PDF_PhraseFinder
             }
         }
 
+
+        private bool DocSearchPage(int p)
+        {
+            string aPage = "";
+            object What = Microsoft.Office.Interop.Word.WdGoToItem.wdGoToPage;
+            object Which = Microsoft.Office.Interop.Word.WdGoToDirection.wdGoToAbsolute;
+            object Miss = System.Reflection.Missing.Value;
+            object Start;
+            object End;
+            object CurrentPageNumber;
+            object NextPageNumber;
+            CurrentPageNumber = (Convert.ToInt32(p.ToString()));
+            NextPageNumber = (Convert.ToInt32((p + 1).ToString()));
+            // Get start position of current page
+            Start = oWord.Selection.GoTo(ref What, ref Which, ref CurrentPageNumber, ref Miss).Start;
+
+            // Get end position of current page                                
+            End = oWord.Selection.GoTo(ref What, ref Which, ref NextPageNumber, ref Miss).End;
+            // Get text
+            if (Convert.ToInt32(Start.ToString()) != Convert.ToInt32(End.ToString()))
+                aPage = oDoc.Range(ref Start, ref End).Text;
+            else
+                aPage = oDoc.Range(ref Start).Text;
+            if (cbIgnoreCase.Checked) aPage = aPage.ToLower();
+            for (int i = 0; i < NumPhrases; i++)
+            {
+                if (phlist[i].Select)
+                    FindMatches(ref aPage, i, p);
+            }
+            return true;
+        }
         private bool SearchThisFullPage(int p, ref Object jsObj, ref Type T)
         {
             string word, strBig = "";
@@ -309,6 +356,10 @@ namespace PDF_PhraseFinder
             '5 = AVZoomPreferred
         */
 
+        private void DocShowFoundPage()
+        {
+
+        }
 
         private void ShowFoundPhrase()
         {
@@ -346,7 +397,8 @@ namespace PDF_PhraseFinder
             int iVal = Convert.ToInt32(nudPage.Value);
             iCurrentPage = ThisPageList[iVal];
             tbViewPage.Text = iCurrentPage.ToString();
-            ShowFoundPhrase();
+            if (DoingPDF) ShowFoundPhrase();
+            else DocShowFoundPage();
             iCurrentPagePhraseActive = 0;
             iCurrentPagePhraseCount = phlist[iCurrentRow].WordsOnPage[Convert.ToInt32(nudPage.Value)];
             btnNext.Visible = iCurrentPagePhraseCount > 0;
@@ -356,6 +408,56 @@ namespace PDF_PhraseFinder
         //AcroRd32.exe /A "zoom=50&navpanes=1=OpenActions&search=batch" PdfFile
         // above search for the phrase "batch" is another way
 
+
+        private bool DocRunSearch()
+        {
+            if (oDoc != null)
+            {
+                string OutText = "";
+                TotalMatches = 0;
+                iNullCount = 0;
+                iCurrentPage = 1;
+                tbMatches.Text += "Searching ...\r\n";
+
+                for (int p = 0; p < TotalPDFPages; p++)
+                {
+                    bool bOK = DocSearchPage(p);
+                    if (!bOK)
+                    {
+                        tbMatches.Text += "problem reading doc at page " + p.ToString();
+                        return false;
+                    }
+                    AllowProgressEvent();
+                    if ((p % 10) == 0)
+                    {
+                        tbpageNum.Text = p.ToString();
+                    }
+                    if (bStopEarly)
+                    {
+                        bStopEarly = false;
+                        break;
+                    }
+                }
+                pbarLoading.Value = 0;   // clear the progress bar and show results of the pattern search
+                for (int i = 0; i < NumPhrases; i++)
+                {
+                    if (phlist[i].iNumber > 0)
+                    {
+                        OutText += ">" + phlist[i].Phrase.ToUpper() + "<    found on following pages\r\n";
+                        OutText += phlist[i].strPages + "\r\n";
+                        OutText += "Total Duplicate pages: " + phlist[i].iDupPageCnt + "\r\n\r\n";
+                    }
+                }
+                if (iNullCount > 0) tbMatches.Text += "Null words found:" + iNullCount.ToString() + "\r\n";
+                tbMatches.Text += OutText;
+                TotalMatches = GetMatchCount();
+                tbTotalMatch.Text = TotalMatches.ToString();
+                //avDoc.Close(1);
+                dgv_phrases.DataSource = phlist.ToArray(); // connect results to the data grid view widget
+                return true;
+            }
+            return false;
+        }
 
         private bool RunSearch()
         {
@@ -539,7 +641,7 @@ namespace PDF_PhraseFinder
         private bool ErrorsInTable()
         {
             bool bMustSort = false; // length of phrase may have changed
-            for(int i = 0; i < NumPhrases;i++)
+            for (int i = 0; i < NumPhrases; i++)
             {
                 string strTemp = globals.RemoveWhiteSpace(phlist[i].Phrase);
                 bool bErr = globals.CheckSyntax(strTemp);
@@ -551,7 +653,7 @@ namespace PDF_PhraseFinder
                     InitialPhrase[i] = strTemp;
                 }
             }
-            if(bMustSort)
+            if (bMustSort)
             {
                 SortPhrasesList();
                 FillNewPhrases();
@@ -568,7 +670,8 @@ namespace PDF_PhraseFinder
             btnRunSearch.Enabled = false;
             btnStopScan.Enabled = true;
             globals.GiveRunWarning();
-            RunSearch();
+            if (DoingPDF) RunSearch();
+            else DocRunSearch();
             btnRunSearch.Enabled = true;
             btnStopScan.Enabled = false;
         }
@@ -601,7 +704,8 @@ namespace PDF_PhraseFinder
         private void btnViewDoc_Click(object sender, EventArgs e)
         {
             iCurrentPage = Convert.ToInt32(tbViewPage.Text);
-            ShowFoundPhrase();
+            if (DoingPDF) ShowFoundPhrase();
+            else DocShowFoundPage();
         }
 
 
@@ -614,7 +718,8 @@ namespace PDF_PhraseFinder
             nudPage.ValueChanged -= nudPage_ValueChanged;
             nudPage.Value = 0;
             nudPage.ValueChanged += nudPage_ValueChanged;
-            ShowFoundPhrase();
+            if (DoingPDF) ShowFoundPhrase();
+            else DocShowFoundPage();
         }
 
 
@@ -625,7 +730,7 @@ namespace PDF_PhraseFinder
         /// </summary>
         private void GetSelection()
         {
-            Point ThisRC = dgv_phrases.CurrentCellAddress;
+            System.Drawing.Point ThisRC = dgv_phrases.CurrentCellAddress;
             iCurrentRow = ThisRC.Y;
             int iCol = ThisRC.X;
             if (iCol < 2) return; // allow editing the text or checkbox column
@@ -664,10 +769,10 @@ namespace PDF_PhraseFinder
                 else KeepList.Add(i);
                 i++;
             }
-            if(n == 0)
+            if (n == 0)
             {
                 DiaRes = MessageBox.Show(
-                    "You need to highlight the entire row to delete a phrase","Warning");
+                    "You need to highlight the entire row to delete a phrase", "Warning");
                 return;
             }
             DiaRes = MessageBox.Show(
@@ -758,7 +863,7 @@ namespace PDF_PhraseFinder
                     ThisDoc.Close(1);
             }
             catch (Exception ex)
-            { 
+            {
             }
         }
 
@@ -800,7 +905,7 @@ namespace PDF_PhraseFinder
         {
             List<string> strReturn = new List<string>();
             List<string> InitialPhraseChk = new List<string>();
-            for(int i = 0; i < NumPhrases; i++)
+            for (int i = 0; i < NumPhrases; i++)
             {
                 string str = (string)dgv_phrases.Rows[i].Cells[1].EditedFormattedValue;
                 bool bUse = (bool)dgv_phrases.Rows[i].Cells[0].EditedFormattedValue;
@@ -855,5 +960,36 @@ namespace PDF_PhraseFinder
             cbZoom.SelectedIndex = LocalSettings.PDFZoomInx;
         }
 
+        private void OpenWord_Click(object sender, EventArgs e)
+        {
+
+            ofd = new OpenFileDialog();
+            ofd.DefaultExt = "*docx";
+            ofd.InitialDirectory = LocalSettings.strLastFolder;
+            ofd.Filter = "(Word Doc)|*.docx";
+            tbMatches.Text = "";
+            if (DialogResult.OK != ofd.ShowDialog())
+            {
+                tbMatches.Text = "ERROR:no DOCX file found";
+                searchPanel.Enabled = false;
+                return;
+            }
+            tbPdfName.Text = ofd.FileName;
+            LocalSettings.strLastFolder = Path.GetDirectoryName(ofd.FileName);
+            if (oDoc != null)
+            {
+                tbMatches.Text += "Closing Document...\r\n";
+                oDoc = null;
+            }
+            tbMatches.Text += "Opening Document...\r\n";
+            oWord = new Word.Application();
+            oDoc = oWord.Application.Documents.Open(ofd.FileName);
+            oWord.Visible = false;
+            oDoc.Activate();
+            tbMatches.Text += "Document Open for searching\r\n";
+            searchPanel.Enabled = DOCGetPageCount();
+            gbPageCtrl.Visible = searchPanel.Enabled;
+            DoingPDF = false;
+        }
     }
 }
