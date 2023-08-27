@@ -10,8 +10,9 @@ namespace PDF_PhraseFinder
 {
     internal static class globals
     {
+        // BadLetters = ".,/|[]{}\\-_=!@#$%^&*()+`~,/;:'\"";
 
-        public static string BadLetters = ".,/|[]{}\\-_=!@#$%^&*()+`~,./;:'\"";
+        public static string BadLetters = ",/|[]{}\\-_=!@#$%^&*()+`~,/;:'\"";
 
         // return true if a problem with the phrase construction, else false;
         public static bool CheckSyntax(string aPhrase)
@@ -48,9 +49,21 @@ namespace PDF_PhraseFinder
             {
                 strOut += str + " ";
             }
-            return strOut;
+            return strOut.Trim();
         }
 
+        public static string RemovePunctuation(string strIn)
+        {
+            string strTemp = strIn;
+            foreach (char strChar in BadLetters)
+            { 
+                if(strIn.Contains(strChar))
+                {
+                    strTemp = strTemp.Replace(strChar, ' ');
+                }
+            }
+            return RemoveWhiteSpace(strTemp);
+        }
 
 
 

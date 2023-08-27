@@ -117,20 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <data name="textBox1.Text" xml:space="preserve">
-    <value>Use the clipboard (copy / paste)  and notepad  to save / restore phrases
-
-PREFIX PHRASES WITH 1: OR 0:  TO INDICATE CHECKED OR NOT TO BE
-CHECKED
-
-Phrases as listed below are used "as is" in Word DOCX but may be edited
-for PDF as punctuation is not used.  Click "Show PDF edits" to see what
-will be used instead of the ones below.</value>
-  </data>
-  <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>25</value>
-  </metadata>
 </root>

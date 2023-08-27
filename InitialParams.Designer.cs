@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InitialParams));
             groupBox2 = new GroupBox();
             groupBox1 = new GroupBox();
             btnUnChk = new Button();
@@ -102,21 +103,21 @@
             // textBox1
             // 
             textBox1.BackColor = SystemColors.Info;
-            textBox1.Location = new Point(46, 31);
+            textBox1.Location = new Point(6, 22);
             textBox1.Multiline = true;
             textBox1.Name = "textBox1";
             textBox1.ReadOnly = true;
-            textBox1.Size = new Size(354, 84);
+            textBox1.Size = new Size(448, 151);
             textBox1.TabIndex = 8;
-            textBox1.Text = "Use the clipboard (copy / paste)  and notepad\r\n to save / restore phrases\r\n\r\nPREFIX PHRASES WITH 1: OR 0:  TO INDICATE CHECKED\r\nOR NOT TO BE CHECKED";
+            textBox1.Text = resources.GetString("textBox1.Text");
             // 
             // btnChkErr
             // 
-            btnChkErr.Location = new Point(501, 295);
+            btnChkErr.Location = new Point(526, 295);
             btnChkErr.Name = "btnChkErr";
             btnChkErr.Size = new Size(102, 23);
             btnChkErr.TabIndex = 7;
-            btnChkErr.Text = "Verify Syntax";
+            btnChkErr.Text = "Show PDF edits";
             toolTip1.SetToolTip(btnChkErr, "Must be 3 characters or more");
             btnChkErr.UseVisualStyleBackColor = true;
             btnChkErr.Click += btnChkErr_Click;
@@ -164,11 +165,11 @@
             // 
             // tbPhrases
             // 
-            tbPhrases.Location = new Point(6, 150);
+            tbPhrases.Location = new Point(6, 198);
             tbPhrases.Multiline = true;
             tbPhrases.Name = "tbPhrases";
             tbPhrases.ScrollBars = ScrollBars.Both;
-            tbPhrases.Size = new Size(460, 281);
+            tbPhrases.Size = new Size(460, 259);
             tbPhrases.TabIndex = 0;
             // 
             // InitialParams

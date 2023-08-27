@@ -43,43 +43,23 @@ namespace PDF_PhraseFinder
         private void btnApply_Click(object sender, EventArgs e)
         {
             bool bBad = AddMissingCheckmarks(true);
-            if(bBad)
+            if (bBad)
             {
-                DialogResult dialogresult = MessageBox.Show("You had at least one missing checkbox.  Cancel exit?","Warning",MessageBoxButtons.OKCancel);
+                DialogResult dialogresult = MessageBox.Show("You had at least one missing checkbox.\r\nCancel exit? or click OK to continue", "Warning", MessageBoxButtons.OKCancel);
                 if (dialogresult == DialogResult.Cancel) return;
             }
-            bBad = CheckSyntax();
-            if (bBad) return;
             str1 = StrToStrs(tbPhrases.Text);
 
             foreach (string str in str1)
             {
-                OutStr.Add(str);
+                OutStr.Add(str + "\r\n");
             }
             this.Close();
         }
 
         // first two chars of phrase might have 1: or 0:
         // return true of a problem, else false;
-        private bool CheckSyntax()
-        {
-            string strBad = "";
-            string strOut = "";
-            int j;
-            int ErrCnt = 0;
-            string[] strS = StrToStrs(tbPhrases.Text);
-            foreach (string strA in strS)
-            {
-                j = 0;
-                string str = globals.RemoveWhiteSpace(strA);
-                string strPrefix = str.Substring(0, 2);
-                if (strPrefix == "1:" || strPrefix == "0:") j = 2;
-                if(globals.CheckSyntax(str.Substring(2)))ErrCnt++;
-                strOut += str + "\r\n";
-            }
-            tbPhrases.Text = strOut;
-            return ErrCnt > 0;
-        }
+
 
         private void btnCancel_Click(object sender, EventArgs e)
         {
@@ -87,9 +67,32 @@ namespace PDF_PhraseFinder
             this.Close();
         }
 
+        private void FixWhiteSpace(ref string[] strIn)
+        {
+            int n = strIn.Length;
+            string strOut = "";
+            for(int i = 0; i < n; i++)
+            {
+                string strTemp = globals.RemoveWhiteSpace(strIn[i]);
+                strIn[i] = strTemp;
+                strOut += strTemp;
+            }
+            tbPhrases.Text = strOut;
+        }
+
         private void btnChkErr_Click(object sender, EventArgs e)
         {
-            CheckSyntax();
+            int i = 0;
+            string[] strDOC = StrToStrs(tbPhrases.Text);
+            int n = strDOC.Length;
+            string[] strPDF = new string[n];
+            foreach(string strA in strDOC)
+            {
+                strPDF[i] = globals.RemovePunctuation(strA);
+                i++;
+            }
+            PDFedits EditSetup = new PDFedits(ref strDOC, ref strPDF);
+            EditSetup.ShowDialog();
         }
 
 
@@ -115,7 +118,6 @@ namespace PDF_PhraseFinder
                 }
             }
             tbPhrases.Text = strOut;
-            CheckSyntax();
         }
 
         private bool AddMissingCheckmarks(bool bChk)
@@ -123,8 +125,9 @@ namespace PDF_PhraseFinder
             string[] strs = StrToStrs(tbPhrases.Text.Trim());
             string strOut = "";
             bool bAnyMissing = false;
-            foreach (string str in strs)
+            foreach (string strA in strs)
             {
+                string str = globals.RemoveWhiteSpace(strA);
                 string strPrefix = str.Substring(0, 2);
                 if (strPrefix == "1:" || strPrefix == "0:")
                 {
@@ -136,7 +139,7 @@ namespace PDF_PhraseFinder
                     bAnyMissing = true;
                 }
             }
-            if(bAnyMissing)
+            if (bAnyMissing)
                 tbPhrases.Text = strOut;
             return bAnyMissing;
         }

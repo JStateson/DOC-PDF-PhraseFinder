@@ -244,9 +244,11 @@ namespace PDF_PhraseFinder
         }
 
 
-        private void FindMatches(ref string strBig, int j, int p)
+        private void FindMatches(ref string strBig1, int j, int p)
         {
+            string strBig = globals.RemoveWhiteSpace(strBig1);
             string strPhrase = WorkingPhrases[j];
+            if(DoingPDF)strPhrase = globals.RemovePunctuation(strPhrase);
             int iWidth = strPhrase.Length;
 
             while (true)
@@ -333,6 +335,10 @@ namespace PDF_PhraseFinder
                 {
                     if (cbIgnoreCase.Checked) word = word.ToLower();
                     strBig += word;
+                }
+                else
+                {
+                    iNullCount++;
                 }
                 strBig += " ";
             }
@@ -490,7 +496,7 @@ namespace PDF_PhraseFinder
 
                 tbMatches.Text += "Searching ...\r\n";
 
-                for (int p = 0; p < TotalPDFPages; p++)
+                for (int p = 21; p < TotalPDFPages; p++)
                 {
                     bool bOK = SearchThisFullPage(p, ref jsObj, ref T);
                     if (!bOK)
@@ -660,8 +666,8 @@ namespace PDF_PhraseFinder
             for (int i = 0; i < NumPhrases; i++)
             {
                 string strTemp = globals.RemoveWhiteSpace(phlist[i].Phrase);
-                bool bErr = globals.CheckSyntax(strTemp);
-                if (bErr) return true;
+                //bool bErr = globals.CheckSyntax(strTemp);
+                //if (bErr) return true;
                 if (strTemp != phlist[i].Phrase)
                 {
                     bMustSort = true;
