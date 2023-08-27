@@ -51,7 +51,7 @@ namespace PDF_PhraseFinder
         private int[] ThisPageList;
         private int iCurrentPage = 0;
         private bool bStopEarly = false;
-        private int NumPhrases = 5;
+        private int NumPhrases = 6;
         private int TotalPDFPages, TotalMatches;
         //private IFields theseFields;
         private bool bFormDirty = false;
@@ -71,9 +71,9 @@ namespace PDF_PhraseFinder
         private cLocalSettings LocalSettings = new cLocalSettings();    // table of settings
         //private static System.Timers.Timer aTimer;
 
-        private string[] InitialPhrase = new string[5] { "school lunch", "Civil Rights", "contract", "food service", "fixed price" };
-        private string[] WorkingPhrases = new string[5]; // same as above but optomises somewhat for case sensitivity
-        private bool[] bUsePhrase = new bool[5] { true, true, true, true, true };
+        private string[] InitialPhrase = new string[6] { "labor cost", "prices charged", "catered meals", "program regulations", "7 CFR 250.53(a)(11)", "7 CFR 250.53(a)(12)" };
+        private string[] WorkingPhrases = new string[6]; // same as above but optomises somewhat for case sensitivity
+        private bool[] bUsePhrase = new bool[6] { true, true, true, true, true, true };
 
 
 
@@ -248,7 +248,7 @@ namespace PDF_PhraseFinder
         {
             string strBig = globals.RemoveWhiteSpace(strBig1);
             string strPhrase = WorkingPhrases[j];
-            if(DoingPDF)strPhrase = globals.RemovePunctuation(strPhrase);
+            if (DoingPDF) strPhrase = globals.RemovePunctuation(strPhrase);
             int iWidth = strPhrase.Length;
 
             while (true)
@@ -317,8 +317,8 @@ namespace PDF_PhraseFinder
             {
                 try
                 {
-                    //get a word
-                    object[] getPageNthWordParam = { p, i };
+                    //get a word.  Using "false" caused punctuation to show up but word wrap not fixed
+                    object[] getPageNthWordParam = { p, i }; // { p, i, false };
                     word = (String)T.InvokeMember(
                         "getPageNthWord",
                         BindingFlags.InvokeMethod |
@@ -648,10 +648,8 @@ namespace PDF_PhraseFinder
             for (int i = 0; i < NumPhrases; i++)
             {
                 strTemp = phlist[i].Phrase;
-                WorkingPhrases[i] = cbWholeWord.Checked ? " " : "";
                 strTemp = cbIgnoreCase.Checked ? strTemp.ToLower() : strTemp;
                 WorkingPhrases[i] += strTemp.Trim();
-                WorkingPhrases[i] += cbWholeWord.Checked ? " " : "";
             }
         }
 
@@ -881,7 +879,7 @@ namespace PDF_PhraseFinder
         private void PhraseFinderForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             globals.SaveLocalSettings(ref LocalSettings);
-            if(DoingPDF)
+            if (DoingPDF)
             {
                 if (ThisDoc == null) return;
                 try
@@ -975,7 +973,7 @@ namespace PDF_PhraseFinder
         {
             if (ThisPageList == null) return;
             bool bFound = true;
-            if(DoingPDF)
+            if (DoingPDF)
             {
                 bFound = ThisDoc.FindText(CurrentActivePhrase,
                     cbIgnoreCase.Checked ? 0 : 1,
@@ -984,7 +982,7 @@ namespace PDF_PhraseFinder
             }
             else
             {
-                object FindText = CurrentActivePhrase;           
+                object FindText = CurrentActivePhrase;
                 oWord.Selection.Find.Execute(FindText);
             }
         }
@@ -1018,6 +1016,7 @@ namespace PDF_PhraseFinder
             if (oDoc != null)
             {
                 tbMatches.Text += "Closing Document...\r\n";
+                oWord.Quit(false);
                 oDoc = null;
             }
             tbMatches.Text += "Opening Document...\r\n";

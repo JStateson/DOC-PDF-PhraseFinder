@@ -47,12 +47,12 @@ namespace PDF_PhraseFinder
             btnSave = new Button();
             nudPage = new NumericUpDown();
             btnNext = new Button();
-            cbWholeWord = new CheckBox();
             dgv_phrases = new DataGridView();
             tbZoomPCT = new TextBox();
             gbPageCtrl = new GroupBox();
             tbViewPage = new TextBox();
             btnViewDoc = new Button();
+            cbWholeWord = new CheckBox();
             groupBox1 = new GroupBox();
             groupBox3 = new GroupBox();
             tbTotalMatch = new TextBox();
@@ -101,7 +101,7 @@ namespace PDF_PhraseFinder
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { openToolStripMenuItem, OpenWord, exitToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { OpenWord, openToolStripMenuItem, exitToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(37, 20);
             fileToolStripMenuItem.Text = "File";
@@ -109,21 +109,21 @@ namespace PDF_PhraseFinder
             // openToolStripMenuItem
             // 
             openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(131, 22);
+            openToolStripMenuItem.Size = new Size(180, 22);
             openToolStripMenuItem.Text = "Open PDF";
             openToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
             // OpenWord
             // 
             OpenWord.Name = "OpenWord";
-            OpenWord.Size = new Size(131, 22);
+            OpenWord.Size = new Size(180, 22);
             OpenWord.Text = "Open DOC";
             OpenWord.Click += OpenWord_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(131, 22);
+            exitToolStripMenuItem.Size = new Size(180, 22);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
@@ -202,19 +202,6 @@ namespace PDF_PhraseFinder
             btnNext.Visible = false;
             btnNext.Click += btnNext_Click;
             // 
-            // cbWholeWord
-            // 
-            cbWholeWord.AutoSize = true;
-            cbWholeWord.Checked = true;
-            cbWholeWord.CheckState = CheckState.Checked;
-            cbWholeWord.Location = new Point(22, 64);
-            cbWholeWord.Name = "cbWholeWord";
-            cbWholeWord.Size = new Size(92, 19);
-            cbWholeWord.TabIndex = 6;
-            cbWholeWord.Text = "Whole Word";
-            toolTip1.SetToolTip(cbWholeWord, "adds space before aned after efver phrase");
-            cbWholeWord.UseVisualStyleBackColor = true;
-            // 
             // dgv_phrases
             // 
             dgv_phrases.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -268,6 +255,18 @@ namespace PDF_PhraseFinder
             btnViewDoc.Text = "View Doc";
             btnViewDoc.UseVisualStyleBackColor = true;
             btnViewDoc.Click += btnViewDoc_Click;
+            // 
+            // cbWholeWord
+            // 
+            cbWholeWord.AutoSize = true;
+            cbWholeWord.Checked = true;
+            cbWholeWord.CheckState = CheckState.Checked;
+            cbWholeWord.Location = new Point(22, 64);
+            cbWholeWord.Name = "cbWholeWord";
+            cbWholeWord.Size = new Size(92, 19);
+            cbWholeWord.TabIndex = 6;
+            cbWholeWord.Text = "Whole Word";
+            cbWholeWord.UseVisualStyleBackColor = true;
             // 
             // groupBox1
             // 
