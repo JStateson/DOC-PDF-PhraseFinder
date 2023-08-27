@@ -16,6 +16,7 @@ using Word = Microsoft.Office.Interop.Word;
 using Microsoft.Office.Interop.Word;
 using System.Reflection.Metadata;
 using System;
+using Application = System.Windows.Forms.Application;
 
 //using System.Timers;
 
@@ -358,7 +359,22 @@ namespace PDF_PhraseFinder
 
         private void DocShowFoundPage()
         {
-
+            if (iCurrentPage < 0) return;
+            if (oDoc == null) return;
+            if (oWord == null) return;
+            object What = Microsoft.Office.Interop.Word.WdGoToItem.wdGoToPage;
+            object Which = Microsoft.Office.Interop.Word.WdGoToDirection.wdGoToAbsolute;
+            object Miss = System.Reflection.Missing.Value;
+            object Start;
+            object CurrentPageNumber;
+            object NextPageNumber;
+            CurrentPageNumber = (Convert.ToInt32(iCurrentPage.ToString()));
+            // Get start position of current page
+            Start = oWord.Selection.GoTo(ref What, ref Which, ref CurrentPageNumber, ref Miss).Start;
+            oWord.Visible = true;
+            object FindText = CurrentActivePhrase;
+            //oWord.Selection.ClearFormatting();            
+            oWord.Selection.Find.Execute(FindText);
         }
 
         private void ShowFoundPhrase()
@@ -741,6 +757,9 @@ namespace PDF_PhraseFinder
                 iCurrentPage = ThisPageList[0];
                 tbViewPage.Text = iCurrentPage.ToString();
                 CurrentActivePhrase = phlist[iCurrentRow].Phrase;
+                if (DoingPDF) CurrentActivePhrase = CurrentActivePhrase.Trim(); // need to remove last space
+                // because the PDF extracts full words and DOCX will have punctuation.
+                // 8/26/2023 may need to change the validate to allow punctuation ???
                 iCurrentPagePhraseActive = 0; // start of first (at least one) phrase found on the page
                 iCurrentPagePhraseCount = phlist[iCurrentRow].WordsOnPage[0];
                 SetNumeric_UpDn_Page();
@@ -856,21 +875,27 @@ namespace PDF_PhraseFinder
         private void PhraseFinderForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             globals.SaveLocalSettings(ref LocalSettings);
-            if (ThisDoc == null) return;
-            try
+            if(DoingPDF)
             {
-                if (ThisDoc.IsValid())
-                    ThisDoc.Close(1);
+                if (ThisDoc == null) return;
+                try
+                {
+                    if (ThisDoc.IsValid())
+                        ThisDoc.Close(1);
+                }
+                catch (Exception ex)
+                {
+                    return;
+                }
             }
-            catch (Exception ex)
-            {
-            }
+            if (oDoc == null) return;
+            oWord.Quit(false);
         }
 
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            this.Close(); // may want to prompt user to save changes ???
+            this.Close();
         }
 
 
@@ -943,11 +968,19 @@ namespace PDF_PhraseFinder
         private void btnNext_Click(object sender, EventArgs e)
         {
             if (ThisPageList == null) return;
-            bool bFound = ThisDoc.FindText(CurrentActivePhrase,
-                cbIgnoreCase.Checked ? 0 : 1,
-                cbWholeWord.Checked ? 1 : 0,
-                0);
-
+            bool bFound = true;
+            if(DoingPDF)
+            {
+                bFound = ThisDoc.FindText(CurrentActivePhrase,
+                    cbIgnoreCase.Checked ? 0 : 1,
+                    cbWholeWord.Checked ? 1 : 0,
+                    0);
+            }
+            else
+            {
+                object FindText = CurrentActivePhrase;           
+                oWord.Selection.Find.Execute(FindText);
+            }
         }
 
         private void cbIgnoreCase_CheckedChanged_1(object sender, EventArgs e)
