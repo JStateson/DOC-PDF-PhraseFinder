@@ -35,8 +35,8 @@ namespace PDF_PhraseFinder
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PhraseFinderForm));
             MStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
-            openToolStripMenuItem = new ToolStripMenuItem();
             OpenWord = new ToolStripMenuItem();
+            openToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
@@ -106,19 +106,20 @@ namespace PDF_PhraseFinder
             fileToolStripMenuItem.Size = new Size(37, 20);
             fileToolStripMenuItem.Text = "File";
             // 
-            // openToolStripMenuItem
-            // 
-            openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(180, 22);
-            openToolStripMenuItem.Text = "Open PDF";
-            openToolStripMenuItem.Click += openToolStripMenuItem_Click;
-            // 
             // OpenWord
             // 
             OpenWord.Name = "OpenWord";
             OpenWord.Size = new Size(180, 22);
             OpenWord.Text = "Open DOC";
             OpenWord.Click += OpenWord_Click;
+            // 
+            // openToolStripMenuItem
+            // 
+            openToolStripMenuItem.Enabled = false;
+            openToolStripMenuItem.Name = "openToolStripMenuItem";
+            openToolStripMenuItem.Size = new Size(180, 22);
+            openToolStripMenuItem.Text = "Open PDF";
+            openToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
@@ -147,7 +148,7 @@ namespace PDF_PhraseFinder
             // 
             // btnAdd
             // 
-            btnAdd.Location = new Point(49, 19);
+            btnAdd.Location = new Point(15, 19);
             btnAdd.Name = "btnAdd";
             btnAdd.Size = new Size(97, 23);
             btnAdd.TabIndex = 0;
@@ -160,7 +161,7 @@ namespace PDF_PhraseFinder
             // 
             btnRemove.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnRemove.ForeColor = Color.Red;
-            btnRemove.Location = new Point(49, 64);
+            btnRemove.Location = new Point(15, 64);
             btnRemove.Name = "btnRemove";
             btnRemove.Size = new Size(97, 23);
             btnRemove.TabIndex = 1;
@@ -171,7 +172,7 @@ namespace PDF_PhraseFinder
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(49, 107);
+            btnSave.Location = new Point(15, 107);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(97, 23);
             btnSave.TabIndex = 2;
@@ -192,7 +193,7 @@ namespace PDF_PhraseFinder
             // 
             // btnNext
             // 
-            btnNext.Location = new Point(258, 44);
+            btnNext.Location = new Point(238, 42);
             btnNext.Name = "btnNext";
             btnNext.Size = new Size(126, 33);
             btnNext.TabIndex = 3;
@@ -205,10 +206,10 @@ namespace PDF_PhraseFinder
             // dgv_phrases
             // 
             dgv_phrases.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv_phrases.Location = new Point(375, 31);
+            dgv_phrases.Location = new Point(312, 31);
             dgv_phrases.Name = "dgv_phrases";
             dgv_phrases.RowTemplate.Height = 25;
-            dgv_phrases.Size = new Size(344, 309);
+            dgv_phrases.Size = new Size(455, 309);
             dgv_phrases.TabIndex = 0;
             toolTip1.SetToolTip(dgv_phrases, "click any row to select a phrase  for page viewing");
             dgv_phrases.Click += dgv_phrases_Click;
@@ -229,9 +230,9 @@ namespace PDF_PhraseFinder
             gbPageCtrl.Controls.Add(nudPage);
             gbPageCtrl.Controls.Add(btnViewDoc);
             gbPageCtrl.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point);
-            gbPageCtrl.Location = new Point(787, 459);
+            gbPageCtrl.Location = new Point(809, 459);
             gbPageCtrl.Name = "gbPageCtrl";
-            gbPageCtrl.Size = new Size(406, 115);
+            gbPageCtrl.Size = new Size(384, 115);
             gbPageCtrl.TabIndex = 6;
             gbPageCtrl.TabStop = false;
             gbPageCtrl.Text = "Page View Control (page/word)";
@@ -330,9 +331,9 @@ namespace PDF_PhraseFinder
             searchPanel.Controls.Add(pbarLoading);
             searchPanel.Controls.Add(btnRunSearch);
             searchPanel.Enabled = false;
-            searchPanel.Location = new Point(33, 42);
+            searchPanel.Location = new Point(18, 42);
             searchPanel.Name = "searchPanel";
-            searchPanel.Size = new Size(552, 171);
+            searchPanel.Size = new Size(555, 171);
             searchPanel.TabIndex = 2;
             searchPanel.TabStop = false;
             searchPanel.Text = "Search Progress";
@@ -392,9 +393,9 @@ namespace PDF_PhraseFinder
             groupBox6.Controls.Add(groupBox9);
             groupBox6.Controls.Add(groupBox8);
             groupBox6.Controls.Add(dgv_phrases);
-            groupBox6.Location = new Point(33, 219);
+            groupBox6.Location = new Point(18, 219);
             groupBox6.Name = "groupBox6";
-            groupBox6.Size = new Size(727, 355);
+            groupBox6.Size = new Size(773, 355);
             groupBox6.TabIndex = 4;
             groupBox6.TabStop = false;
             groupBox6.Text = "Phrase Searching";
@@ -442,14 +443,14 @@ namespace PDF_PhraseFinder
             groupBox9.Controls.Add(btnSelectAll);
             groupBox9.Location = new Point(172, 194);
             groupBox9.Name = "groupBox9";
-            groupBox9.Size = new Size(176, 146);
+            groupBox9.Size = new Size(127, 146);
             groupBox9.TabIndex = 4;
             groupBox9.TabStop = false;
             groupBox9.Text = "Checkbox Property";
             // 
             // btnInvert
             // 
-            btnInvert.Location = new Point(42, 117);
+            btnInvert.Location = new Point(9, 117);
             btnInvert.Name = "btnInvert";
             btnInvert.Size = new Size(104, 23);
             btnInvert.TabIndex = 2;
@@ -459,7 +460,7 @@ namespace PDF_PhraseFinder
             // 
             // btnUncheckall
             // 
-            btnUncheckall.Location = new Point(42, 73);
+            btnUncheckall.Location = new Point(9, 73);
             btnUncheckall.Name = "btnUncheckall";
             btnUncheckall.Size = new Size(104, 23);
             btnUncheckall.TabIndex = 1;
@@ -469,7 +470,7 @@ namespace PDF_PhraseFinder
             // 
             // btnSelectAll
             // 
-            btnSelectAll.Location = new Point(42, 31);
+            btnSelectAll.Location = new Point(9, 31);
             btnSelectAll.Name = "btnSelectAll";
             btnSelectAll.Size = new Size(104, 23);
             btnSelectAll.TabIndex = 0;
@@ -484,7 +485,7 @@ namespace PDF_PhraseFinder
             groupBox8.Controls.Add(btnAdd);
             groupBox8.Location = new Point(172, 31);
             groupBox8.Name = "groupBox8";
-            groupBox8.Size = new Size(176, 146);
+            groupBox8.Size = new Size(127, 146);
             groupBox8.TabIndex = 2;
             groupBox8.TabStop = false;
             groupBox8.Text = "Phrases";

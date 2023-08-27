@@ -14,6 +14,13 @@ namespace PDF_PhraseFinder
 
         public static string BadLetters = ",/|[]{}\\-_=!@#$%^&*()+`~,/;:'\"";
 
+
+        public static string[] StrToStrs(string strIn)
+        {
+            char[] delimiters = new char[] { '\r', '\n' };
+            return strIn.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+        }
+
         // return true if a problem with the phrase construction, else false;
         public static bool CheckSyntax(string aPhrase)
         {
@@ -45,7 +52,7 @@ namespace PDF_PhraseFinder
             char[] whitespace = new char[] { ' ', '\t' };
             string[] sStr = strIn.Split(whitespace, StringSplitOptions.RemoveEmptyEntries);
             string strOut = "";
-            foreach(string str in sStr)
+            foreach (string str in sStr)
             {
                 strOut += str + " ";
             }
@@ -56,8 +63,8 @@ namespace PDF_PhraseFinder
         {
             string strTemp = strIn;
             foreach (char strChar in BadLetters)
-            { 
-                if(strIn.Contains(strChar))
+            {
+                if (strIn.Contains(strChar))
                 {
                     strTemp = strTemp.Replace(strChar, ' ');
                 }
@@ -91,46 +98,14 @@ namespace PDF_PhraseFinder
         /// <param name="InitialPhrases"></param>
         /// <param name="bUsePhrases"></param>
         /// <returns></returns>
-        public static int ObtainProjectSettings(ref string[] InitialPhrases, ref bool[] bUsePhrases)
+        public static int ObtainProjectSettings(ref string[] InitialPhrases, ref bool[] bUsePhrases, ref bool[] bExactMatch)
         {
             int n = 0;  // any setttings?
             int i, j;
             string[] SavedSettings;
             StringCollection scSavedWords = new StringCollection();
-            if (null != Properties.Settings.Default.SearchPhrases)
-                n = Properties.Settings.Default.SearchPhrases.Count;
-            if (n > 0)
-            {
-                SavedSettings = new string[Properties.Settings.Default.SearchPhrases.Count];
-                Properties.Settings.Default.SearchPhrases.CopyTo(SavedSettings, 0);
-                scSavedWords.AddRange(SavedSettings);
-                InitialPhrases = new string[n];
-                //WorkingPhrases = new string[n];
-                bUsePhrases = new bool[n];
-                j = 0;
-                foreach (string str in scSavedWords)
-                {
-                    i = str.Length;
-                    if (i < 3)
-                    {
-                        Debug.Assert(false);
-                        return 0;    // cannot be this small
-                    }
-                    i = str.IndexOf(":");   // expecting 0: or 1:
-                    if (i < 0)
-                    {   // if missing then set checkmark
-                        bUsePhrases[j] = true;
-                        InitialPhrases[j] = str;
-                    }
-                    else
-                    {
-                        bUsePhrases[j] = "1" == str.Substring(0, 1);
-                        InitialPhrases[j] = str.Substring(2);
-                    }
-                    j++;
-                }
-            }
-            else
+            string sVers = Properties.Settings.Default.Version;
+            if (sVers != "1")
             {
                 // there are no setting so write them out using the program defaults
                 // this is only done once to get the checkbox value written to settings
@@ -138,11 +113,31 @@ namespace PDF_PhraseFinder
                 i = 0;
                 foreach (string str in InitialPhrases)
                 {
-                    scSavedWords.Add((bUsePhrases[i] ? "1:" : "0:") + str);
+                    scSavedWords.Add((bUsePhrases[i] ? "1:" : "0:") + (bExactMatch[i] ? "1:" : "0:") + str);
                     i++;
                 }
                 Properties.Settings.Default.SearchPhrases = scSavedWords;
+                Properties.Settings.Default.Version = "1";
                 Properties.Settings.Default.Save();
+                return i;
+            }
+            n = Properties.Settings.Default.SearchPhrases.Count;
+            if (n > 0)
+            {
+                SavedSettings = new string[Properties.Settings.Default.SearchPhrases.Count];
+                Properties.Settings.Default.SearchPhrases.CopyTo(SavedSettings, 0);
+                scSavedWords.AddRange(SavedSettings);
+                InitialPhrases = new string[n];
+                bUsePhrases = new bool[n];
+                bExactMatch = new bool[n];
+                j = 0;
+                foreach (string str in scSavedWords)
+                {
+                    bUsePhrases[j] = "1" == str.Substring(0, 1);
+                    bExactMatch[j] = "1" == str.Substring(2, 1);
+                    InitialPhrases[j] = str.Substring(4);
+                    j++;
+                }
             }
             return n;
         }
@@ -219,6 +214,7 @@ application as Non Responding";
     public class cPhraseTable
     {
         public bool Select { get; set; }
+        public bool Match { get; set; }
         public string Phrase { get; set; }
         public string Number { get; set; }
         public int iNumber;
@@ -252,9 +248,10 @@ application as Non Responding";
             nFollowing = CountWords(aPhrase);
         }
 
-        public void InitPhrase(string aPhrase, bool bSelect)
+        public void InitPhrase(string aPhrase, bool bSelect, bool bMatch)
         {
             Select = bSelect;
+            Match = bMatch;
             Number = " ";
             iNumber = 0;
             strPages = "";

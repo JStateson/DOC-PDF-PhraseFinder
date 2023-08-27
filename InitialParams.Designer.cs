@@ -113,6 +113,7 @@
             // 
             // btnChkErr
             // 
+            btnChkErr.Enabled = false;
             btnChkErr.Location = new Point(526, 295);
             btnChkErr.Name = "btnChkErr";
             btnChkErr.Size = new Size(102, 23);

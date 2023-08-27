@@ -34,11 +34,6 @@ namespace PDF_PhraseFinder
             tbPhrases.Text = "";
         }
 
-        private string[] StrToStrs(string strIn)
-        {
-            char[] delimiters = new char[] { '\r', '\n' };
-            return strIn.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
-        }
 
         private void btnApply_Click(object sender, EventArgs e)
         {
@@ -48,11 +43,11 @@ namespace PDF_PhraseFinder
                 DialogResult dialogresult = MessageBox.Show("You had at least one missing checkbox.\r\nCancel exit? or click OK to continue", "Warning", MessageBoxButtons.OKCancel);
                 if (dialogresult == DialogResult.Cancel) return;
             }
-            str1 = StrToStrs(tbPhrases.Text);
+            str1 = globals.StrToStrs(tbPhrases.Text);
 
             foreach (string str in str1)
             {
-                OutStr.Add(str + "\r\n");
+                OutStr.Add(str);
             }
             this.Close();
         }
@@ -71,7 +66,7 @@ namespace PDF_PhraseFinder
         {
             int n = strIn.Length;
             string strOut = "";
-            for(int i = 0; i < n; i++)
+            for (int i = 0; i < n; i++)
             {
                 string strTemp = globals.RemoveWhiteSpace(strIn[i]);
                 strIn[i] = strTemp;
@@ -83,10 +78,10 @@ namespace PDF_PhraseFinder
         private void btnChkErr_Click(object sender, EventArgs e)
         {
             int i = 0;
-            string[] strDOC = StrToStrs(tbPhrases.Text);
+            string[] strDOC = globals.StrToStrs(tbPhrases.Text);
             int n = strDOC.Length;
             string[] strPDF = new string[n];
-            foreach(string strA in strDOC)
+            foreach (string strA in strDOC)
             {
                 strPDF[i] = globals.RemovePunctuation(strA);
                 i++;
@@ -95,63 +90,91 @@ namespace PDF_PhraseFinder
             EditSetup.ShowDialog();
         }
 
-
-        private string SetChk(bool bChk, string str)
+        private bool AddSelectCheckmarks(bool bChk)
         {
-            return (bChk ? "1:" : "0:") + str.Substring(2) + "\r\n";
-        }
-
-        private void PutCheckmarks(bool bChk)
-        {
-            string[] strs = StrToStrs(tbPhrases.Text.Trim());
-            string strOut = "";
-            foreach (string str in strs)
-            {
-                string strPrefix = str.Substring(0, 2);
-                if (strPrefix == "1:" || strPrefix == "0:")
-                {
-                    strOut += SetChk(bChk, str);
-                }
-                else
-                {
-                    strOut += (bChk ? "1:" : "0:") + str + "\r\n";
-                }
-            }
-            tbPhrases.Text = strOut;
-        }
-
-        private bool AddMissingCheckmarks(bool bChk)
-        {
-            string[] strs = StrToStrs(tbPhrases.Text.Trim());
+            string[] strs = globals.StrToStrs(tbPhrases.Text.Trim());
             string strOut = "";
             bool bAnyMissing = false;
             foreach (string strA in strs)
             {
                 string str = globals.RemoveWhiteSpace(strA);
-                string strPrefix = str.Substring(0, 2);
-                if (strPrefix == "1:" || strPrefix == "0:")
+                if (str == "") continue;
+                bool bValid = HasValidChecks(str);
+                if (bValid)
                 {
-                    strOut += str + "\r\n";
+                    strOut += (bChk ? "1:" : "0:") + str.Substring(2) + "\r\n";
                 }
                 else
                 {
-                    strOut += (bChk ? "1:" : "0:") + str + "\r\n";
+                    string strPrefix = str.Substring(0, 2);
                     bAnyMissing = true;
+                    if (strPrefix == "1:" || strPrefix == "0:") // assume this is the "match"
+                    {
+                        strOut += (bChk ? "1:" : "0:") + str + "\r\n";
+                    }
+                    else
+                    {   //assume exact match for default when nothing presented
+                        strOut += (bChk ? "1:" : "0:") + "1:" + str + "\r\n";
+                    }
                 }
             }
-            if (bAnyMissing)
-                tbPhrases.Text = strOut;
+            tbPhrases.Text = strOut;
             return bAnyMissing;
         }
 
+
+        private bool AddMissingCheckmarks(bool bChk)
+        {
+            string[] strs = globals.StrToStrs(tbPhrases.Text.Trim());
+            string strOut = "";
+            bool bAnyMissing = false;
+            foreach (string strA in strs)
+            {
+                string str = globals.RemoveWhiteSpace(strA);
+                if (str == "") continue;
+                bool bValid = HasValidChecks(str);
+                if (bValid)
+                {
+                    strOut += str + "\r\n";
+                    continue;
+                }
+                else
+                {
+                    string strPrefix = str.Substring(0, 2);
+                    bAnyMissing = true;
+                    if (strPrefix == "1:" || strPrefix == "0:") // assume this is the "match"
+                    {
+                        strOut += (bChk ? "1:" : "0:") + str + "\r\n";
+                    }
+                    else
+                    {   //assume exact match for default when nothing presented
+                        strOut += (bChk ? "1:" : "0:") + "1:" + str + "\r\n";
+                    }
+                }
+            }
+            tbPhrases.Text = strOut;
+            return bAnyMissing;
+        }
+
+        private bool HasValidChecks(string strTemp)
+        {
+            string str = strTemp.Substring(0, 4);
+            if (str == "0:0:") return true;
+            if (str == "0:1:") return true;
+            if (str == "1:0:") return true;
+            if (str == "1:1:") return true;
+            return false;
+        }
+
+
         private void btnUnChk_Click(object sender, EventArgs e)
         {
-            PutCheckmarks(false);
+            AddSelectCheckmarks(false);
         }
 
         private void bltnChkAll_Click(object sender, EventArgs e)
         {
-            PutCheckmarks(true);
+            AddSelectCheckmarks(true);
         }
     }
 }

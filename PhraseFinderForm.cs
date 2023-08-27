@@ -74,8 +74,8 @@ namespace PDF_PhraseFinder
         private string[] InitialPhrase = new string[6] { "labor cost", "prices charged", "catered meals", "program regulations", "7 CFR 250.53(a)(11)", "7 CFR 250.53(a)(12)" };
         private string[] WorkingPhrases = new string[6]; // same as above but optomises somewhat for case sensitivity
         private bool[] bUsePhrase = new bool[6] { true, true, true, true, true, true };
-
-
+        private bool[] bExactMatch = new bool[6] { true, false, true, true, true, true };
+        private string ExpectedVersion = "1"; // 1: version has 4 columns in grid
 
         /// <summary>
         /// entry point for main form
@@ -93,7 +93,7 @@ namespace PDF_PhraseFinder
                 MessageBox.Show("Adobe PRO or STANDARD is not present");
                 this.Close();
             }
-            NumPhrases = globals.ObtainProjectSettings(ref InitialPhrase, ref bUsePhrase);
+            NumPhrases = globals.ObtainProjectSettings(ref InitialPhrase, ref bUsePhrase, ref bExactMatch);
             WorkingPhrases = new String[NumPhrases];
             globals.GetLocalSettings(ref LocalSettings);
             tbZoomPCT.Text = LocalSettings.PDFZoomPCT.ToString();
@@ -261,6 +261,24 @@ namespace PDF_PhraseFinder
             }
         }
 
+        private void DocFindMatches(ref string strBig1, int j, int p)
+        {
+            string strBig = globals.RemoveWhiteSpace(strBig1);
+            string[] strSentence = globals.StrToStrs(strBig);
+            string strPhrase = WorkingPhrases[j];
+            int iWidth = strPhrase.Length;
+
+            while (true)
+            {
+                int i = strBig.IndexOf(strPhrase);
+                if (i == -1) return;
+                phlist[j].AddPage(p);
+                phlist[j].IncMatch();
+                strBig = strBig.Remove(i, iWidth);
+            }
+        }
+
+
 
         private bool DocSearchPage(int p)
         {
@@ -288,7 +306,7 @@ namespace PDF_PhraseFinder
             for (int i = 0; i < NumPhrases; i++)
             {
                 if (phlist[i].Select)
-                    FindMatches(ref aPage, i, p);
+                    DocFindMatches(ref aPage, i, p);
             }
             return true;
         }
@@ -547,7 +565,7 @@ namespace PDF_PhraseFinder
             for (int i = 0; i < NumPhrases; i++)
             {
                 cpt = new cPhraseTable();
-                cpt.InitPhrase(InitialPhrase[i], bUsePhrase[i]);
+                cpt.InitPhrase(InitialPhrase[i], bUsePhrase[i], bExactMatch[i]);
                 phlist.Add(cpt);
             }
             dgv_phrases.DataSource = phlist.ToArray();
@@ -566,7 +584,7 @@ namespace PDF_PhraseFinder
             for (int i = 0; i < NumPhrases; i++)
             {
                 cpt = new cPhraseTable();
-                cpt.InitPhrase(InitialPhrase[i], bUsePhrase[i]);
+                cpt.InitPhrase(InitialPhrase[i], bUsePhrase[i], bExactMatch[i]);
                 phlist.Add(cpt);
             }
             dgv_phrases.DataSource = phlist.ToArray();
@@ -578,7 +596,7 @@ namespace PDF_PhraseFinder
             cPhraseTable cpt;
             foreach (DataGridViewRow row in dgv_phrases.Rows)
             {
-                row.Cells[2].Value = "";
+                row.Cells[3].Value = "";
                 cpt = phlist[i];
                 cpt.Number = "";
                 cpt.nFollowing = 0;
@@ -623,25 +641,24 @@ namespace PDF_PhraseFinder
             int j;
             string[] pTemp = new string[NumPhrases];
             bool[] bTemp = new bool[NumPhrases];
+            bool[] bExact = new bool[NumPhrases];
             FormSortIndex();
             for (int i = 0; i < NumPhrases; i++)
             {
                 j = SrtIndex[i];
                 pTemp[i] = InitialPhrase[j];
                 bTemp[i] = bUsePhrase[j];
+                bExact[i] = bExactMatch[j];
             }
             for (int i = 0; i < NumPhrases; i++)
             {
                 InitialPhrase[i] = pTemp[i];
                 bUsePhrase[i] = bTemp[i];
+                bExactMatch[i] = bExact[i];
             }
         }
 
-        /// <summary>
-        /// get the phrase out of that view data table and configure it for
-        /// doing the searching.  User may have changed the phrase and not saved them
-        /// be sure to check for bad construction of a phrase 
-        /// </summary>
+
         private void FormWorkingFromTable()
         {
             string strTemp;
@@ -649,7 +666,7 @@ namespace PDF_PhraseFinder
             {
                 strTemp = phlist[i].Phrase;
                 strTemp = cbIgnoreCase.Checked ? strTemp.ToLower() : strTemp;
-                WorkingPhrases[i] += strTemp.Trim();
+                WorkingPhrases[i] = strTemp;
             }
         }
 
@@ -664,8 +681,6 @@ namespace PDF_PhraseFinder
             for (int i = 0; i < NumPhrases; i++)
             {
                 string strTemp = globals.RemoveWhiteSpace(phlist[i].Phrase);
-                //bool bErr = globals.CheckSyntax(strTemp);
-                //if (bErr) return true;
                 if (strTemp != phlist[i].Phrase)
                 {
                     bMustSort = true;
@@ -893,7 +908,14 @@ namespace PDF_PhraseFinder
                 }
             }
             if (oDoc == null) return;
-            oWord.Quit(false);
+            try
+            {
+                oWord.Quit(false);
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
         }
 
 
@@ -919,12 +941,15 @@ namespace PDF_PhraseFinder
         {
             for (int i = 0; i < NumPhrases; i++)
             {
-                string str = (string)dgv_phrases.Rows[i].Cells[1].EditedFormattedValue;
+                string str = (string)dgv_phrases.Rows[i].Cells[2].EditedFormattedValue;
                 bool bUse = (bool)dgv_phrases.Rows[i].Cells[0].EditedFormattedValue;
+                bool bMat = (bool)dgv_phrases.Rows[i].Cells[1].EditedFormattedValue;
                 phlist[i].Phrase = str;
                 InitialPhrase[i] = str;
                 phlist[i].Select = bUse;
                 bUsePhrase[i] = bUse;
+                phlist[i].Match = bMat;
+                bExactMatch[i] = bMat;
             }
             bool bErr = ErrorsInTable();
             return bErr;
@@ -936,9 +961,11 @@ namespace PDF_PhraseFinder
             List<string> InitialPhraseChk = new List<string>();
             for (int i = 0; i < NumPhrases; i++)
             {
-                string str = (string)dgv_phrases.Rows[i].Cells[1].EditedFormattedValue;
+                string str = (string)dgv_phrases.Rows[i].Cells[2].EditedFormattedValue;
                 bool bUse = (bool)dgv_phrases.Rows[i].Cells[0].EditedFormattedValue;
-                InitialPhraseChk.Add((bUse ? "1:" : "0:") + str);
+                bool bMat = (bool)dgv_phrases.Rows[i].Cells[1].EditedFormattedValue;
+                InitialPhraseChk.Add((bUse ? "1:" : "0:") + (bMat ? "1:" : "0:") + str);
+
             }
             InitialParams ipSetup = new InitialParams(ref InitialPhraseChk, ref strReturn);
             ipSetup.ShowDialog();   // does not return unless dialog box closed
@@ -947,10 +974,12 @@ namespace PDF_PhraseFinder
             InitialPhrase = new string[NumPhrases];
             WorkingPhrases = new string[NumPhrases];
             bUsePhrase = new bool[NumPhrases];
+            bExactMatch = new bool[NumPhrases];
             for (int i = 0; i < NumPhrases; i++)
             {
                 bUsePhrase[i] = strReturn[i].Substring(0, 2) == "1:";
-                InitialPhrase[i] = strReturn[i].Substring(2);
+                bExactMatch[i] = strReturn[i].Substring(2, 2) == "1:";
+                InitialPhrase[i] = strReturn[i].Substring(4);
             }
             SortPhrasesList();
             FillNewPhrases();
