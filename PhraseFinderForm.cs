@@ -495,8 +495,8 @@ namespace PDF_PhraseFinder
                 Type T = jsObj.GetType();
 
                 tbMatches.Text += "Searching ...\r\n";
-
-                for (int p = 21; p < TotalPDFPages; p++)
+                // start at 21 for debugging the 7 CFA problem
+                for (int p = 0; p < TotalPDFPages; p++)
                 {
                     bool bOK = SearchThisFullPage(p, ref jsObj, ref T);
                     if (!bOK)
