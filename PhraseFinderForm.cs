@@ -42,7 +42,7 @@ namespace PDF_PhraseFinder
 
     public partial class PhraseFinderForm : Form
     {
-        private bool bMyDebug = false;  // enable to see informational messages
+        private bool bMyDebug = true;  // enable to see informational messages
         private bool bAllExact = true;    // if false then we need to turn the sentences into a string[]
         private CAcroApp acroApp;
         private AcroAVDoc ThisDoc = null;
@@ -131,7 +131,7 @@ namespace PDF_PhraseFinder
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Document is opened in another app.\r\n You may need to terminate Acrobat 32 DC","ERROR-4");
+                MessageBox.Show("Document is opened in another app.\r\n You may need to terminate Acrobat 32 DC", "ERROR-4");
                 AVDoc = null;
                 return false;
                 //throw;
@@ -189,7 +189,7 @@ namespace PDF_PhraseFinder
             }
             catch (Exception ex)
             {
-                if(bMyDebug)tbMatches.Text += ex.Message + "\r\n";
+                if (bMyDebug) tbMatches.Text += ex.Message + "\r\n";
                 MessageBox.Show("Document may be opened by another app", "WARNING"); ;
             }
             tbMatches.Text += "Document Open for searching\r\n";
@@ -469,19 +469,35 @@ namespace PDF_PhraseFinder
             object NextPageNumber;
             CurrentPageNumber = (Convert.ToInt32(iCurrentPage.ToString()));
             // Get start position of current page
-            Start = oWord.Selection.GoTo(ref What, ref Which, ref CurrentPageNumber, ref Miss).Start;
+            try
+            {
+                Start = oWord.Selection.GoTo(ref What, ref Which, ref CurrentPageNumber, ref Miss).Start;
+            }
+            catch (Exception ex)
+            {
+                if (bMyDebug)
+                    tbMatches.Text += "error " + ex.Message + "\r\n";
+                MessageBox.Show("Document probably closed, please exit and restart", "ERROR");
+                return;
+            }
             oWord.Visible = true;
             object FindText = CurrentActivePhrase;
+            object MyCase = cbIgnoreCase.Checked;
+            object MyWholeWord = cbWholeWord.Checked;
             if (bUseFound)
             {
                 FindText = phlist[iCurrentRow].FoundInSeries[iFoundInSentence];
             }
             //oWord.Selection.ClearFormatting();
-            if(bMyDebug)
+            if (bMyDebug)
                 tbMatches.Text += "looking for " + FindText + "\r\n";
-            oWord.Selection.Find.Execute(FindText);
+            //oWord.Selection.Find.MatchCase = false;
+            oWord.Selection.Find.ClearFormatting();
+            oWord.Selection.Find.Execute(FindText,MyCase, MyWholeWord);
         }
-
+        /// <summary>
+        /// the is for PDF
+        /// </summary>
         private void ShowFoundPhrase()
         {
             if (iCurrentPage < 0) return;
@@ -1032,12 +1048,12 @@ namespace PDF_PhraseFinder
                 WorkingPhrases[i] = strTemp;
                 phlist[i].strInSeries = strTemp.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
                 int n = phlist[i].strInSeries.Length;
-                if(n == 0)
+                if (n == 0)
                 {
-                    MessageBox.Show("Cannot have an empty phrase","ERROR",MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return true ;
+                    MessageBox.Show("Cannot have an empty phrase", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return true;
                 }
-                if(n == 1 && !bMat)
+                if (n == 1 && !bMat)
                 {
                     MessageBox.Show("If only one phrase word then must select MATCH", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     dgv_phrases.Rows[i].Cells[1].Value = true;
@@ -1168,7 +1184,7 @@ namespace PDF_PhraseFinder
             }
             oWord.Visible = false;
             oDoc.Activate();
-            if(bMyDebug)
+            if (bMyDebug)
                 tbMatches.Text += "Document Open for searching\r\n";
             searchPanel.Enabled = DOCGetPageCount();
             gbPageCtrl.Visible = searchPanel.Enabled;

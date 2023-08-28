@@ -514,6 +514,8 @@ namespace PDF_PhraseFinder
             Controls.Add(MStrip);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             MainMenuStrip = MStrip;
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "PhraseFinderForm";
             Text = "USDA / FNS";
             FormClosing += PhraseFinderForm_FormClosing;
