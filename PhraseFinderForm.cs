@@ -43,7 +43,7 @@ namespace PDF_PhraseFinder
 
     public partial class PhraseFinderForm : Form
     {
-
+        private bool bAllExact = true;    // if false then we need to turn the sentences into a string[]
         private CAcroApp acroApp;
         private AcroAVDoc ThisDoc = null;
         private AcroAVDoc AVDoc = null;
@@ -53,15 +53,16 @@ namespace PDF_PhraseFinder
         private bool bStopEarly = false;
         private int NumPhrases = 6;
         private int TotalPDFPages, TotalMatches;
-        //private IFields theseFields;
-        private bool bFormDirty = false;
         private StringCollection scSavedWords;
         private string CurrentActivePhrase = "";
+        private int iFoundInSentence; // this is index to the phrase that was found.  It is not fixed.
+        private bool bUseFound; // used with iFoundInSentence to indicate the phrase is not fixed
         private int iNullCount = 0;
         private int iCurrentPagePhraseCount = 0;
         private int iCurrentPagePhraseActive = 0;
         private int iCurrentRow = 0;
         private int[] SrtIndex;
+        private bool bUseWhole = true;
 
         private Microsoft.Office.Interop.Word.Application oWord;
         private Microsoft.Office.Interop.Word.Document oDoc;
@@ -100,7 +101,7 @@ namespace PDF_PhraseFinder
             cbIgnoreCase.Checked = LocalSettings.bIgnoreCase;
             FillPhrases();
             tbPdfName.Text = " (v) 1.0 (c)Stateson";
-            globals.GiveInitialWarning();
+            //globals.GiveInitialWarning();
             //aTimer = new System.Timers.Timer(100);
             //aTimer.Enabled = false;
             //aTimer.Elapsed += OnTimedEvent;
@@ -248,7 +249,7 @@ namespace PDF_PhraseFinder
         {
             string strBig = globals.RemoveWhiteSpace(strBig1);
             string strPhrase = WorkingPhrases[j];
-            if (DoingPDF) strPhrase = globals.RemovePunctuation(strPhrase);
+            strPhrase = globals.RemovePunctuation(strPhrase);
             int iWidth = strPhrase.Length;
 
             while (true)
@@ -261,20 +262,83 @@ namespace PDF_PhraseFinder
             }
         }
 
-        private void DocFindMatches(ref string strBig1, int j, int p)
+        /// <summary>
+        /// strIn is a sentence or null
+        /// i is index into the phlist and associated tables (use, match, phases, working)
+        /// this function is only used when searching for combination of words in a sentence
+        /// </summary>
+        /// <param name="strIn"></param>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        private string DocFindAnyMatch(string strIn, int i, int n)
+        {
+            int iStart = 0;
+            int i1 = -1;
+            foreach (string str in phlist[i].strInSeries)
+            {
+                int iLoc = strIn.Substring(iStart).IndexOf(str);
+                if (iLoc < 0) return "";
+                if (bUseWhole)
+                {
+                    if (!globals.IsWholeWord(strIn, iStart + iLoc, str.Length))
+                    {
+                        return "";
+                    }
+
+                }
+                if (i1 < 0) i1 = iLoc;  // very first word is i1
+                iStart += iLoc + str.Length; // next phrase must be start past here
+                if (iStart >= n) return "";
+            }
+
+            return strIn.Substring(i1, iStart - i1); ;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="strBig1"></param>
+        /// <param name="Bigs"></param>
+        /// <param name="j"></param>
+        /// <param name="p"></param>
+        private void DocFindMatches(ref string strBig1, ref string[] Bigs, int j, int p)
         {
             string strBig = globals.RemoveWhiteSpace(strBig1);
             string[] strSentence = globals.StrToStrs(strBig);
             string strPhrase = WorkingPhrases[j];
             int iWidth = strPhrase.Length;
-
-            while (true)
+            int i = 0;
+            bUseWhole = cbWholeWord.Checked;
+            if (bExactMatch[j])
             {
-                int i = strBig.IndexOf(strPhrase);
-                if (i == -1) return;
-                phlist[j].AddPage(p);
-                phlist[j].IncMatch();
-                strBig = strBig.Remove(i, iWidth);
+                while (true)
+                {
+                    i = strBig.IndexOf(strPhrase);
+                    if (i == -1) return;
+                    if (bUseWhole)
+                    {
+                        if (!globals.IsWholeWord(strBig, i, strPhrase.Length))
+                            return;
+                    }
+                    phlist[j].AddPage(p);
+                    phlist[j].IncMatch();
+                    strBig = strBig.Remove(i, iWidth);
+                }
+                return;
+            }
+            i = -1;
+            foreach (string str in Bigs)
+            {
+                int n = str.Length;
+                i++;
+                if (n < iWidth) continue;   // cannot fit so cannot be found
+                string strFound = DocFindAnyMatch(str, j, n);
+                if (strFound != "")
+                {
+                    phlist[j].AddPage(p);
+                    phlist[j].IncMatch();
+                    phlist[j].FoundInSeries.Add(strFound);
+                }
             }
         }
 
@@ -283,6 +347,7 @@ namespace PDF_PhraseFinder
         private bool DocSearchPage(int p)
         {
             string aPage = "";
+            string[] aPages = null;
             object What = Microsoft.Office.Interop.Word.WdGoToItem.wdGoToPage;
             object Which = Microsoft.Office.Interop.Word.WdGoToDirection.wdGoToAbsolute;
             object Miss = System.Reflection.Missing.Value;
@@ -293,8 +358,14 @@ namespace PDF_PhraseFinder
             CurrentPageNumber = (Convert.ToInt32(p.ToString()));
             NextPageNumber = (Convert.ToInt32((p + 1).ToString()));
             // Get start position of current page
-            Start = oWord.Selection.GoTo(ref What, ref Which, ref CurrentPageNumber, ref Miss).Start;
-
+            try
+            {
+                Start = oWord.Selection.GoTo(ref What, ref Which, ref CurrentPageNumber, ref Miss).Start;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
             // Get end position of current page                                
             End = oWord.Selection.GoTo(ref What, ref Which, ref NextPageNumber, ref Miss).End;
             // Get text
@@ -303,10 +374,11 @@ namespace PDF_PhraseFinder
             else
                 aPage = oDoc.Range(ref Start).Text;
             if (cbIgnoreCase.Checked) aPage = aPage.ToLower();
+            if (!bAllExact) aPages = globals.StrToStrs(aPage);
             for (int i = 0; i < NumPhrases; i++)
             {
                 if (phlist[i].Select)
-                    DocFindMatches(ref aPage, i, p);
+                    DocFindMatches(ref aPage, ref aPages, i, p);
             }
             return true;
         }
@@ -397,7 +469,12 @@ namespace PDF_PhraseFinder
             Start = oWord.Selection.GoTo(ref What, ref Which, ref CurrentPageNumber, ref Miss).Start;
             oWord.Visible = true;
             object FindText = CurrentActivePhrase;
-            //oWord.Selection.ClearFormatting();            
+            if (bUseFound)
+            {
+                FindText = phlist[iCurrentRow].FoundInSeries[iFoundInSentence];
+            }
+            //oWord.Selection.ClearFormatting();
+            tbMatches.Text += "looking for " + FindText + "\r\n";
             oWord.Selection.Find.Execute(FindText);
         }
 
@@ -606,6 +683,7 @@ namespace PDF_PhraseFinder
                 cpt.strPages = "";
                 cpt.nFollowing = 0;
                 cpt.WordsOnPage.Clear();
+                cpt.FoundInSeries.Clear();
                 i++;
             }
             tbMatches.Clear();
@@ -659,17 +737,6 @@ namespace PDF_PhraseFinder
         }
 
 
-        private void FormWorkingFromTable()
-        {
-            string strTemp;
-            for (int i = 0; i < NumPhrases; i++)
-            {
-                strTemp = phlist[i].Phrase;
-                strTemp = cbIgnoreCase.Checked ? strTemp.ToLower() : strTemp;
-                WorkingPhrases[i] = strTemp;
-            }
-        }
-
         /// <summary>
         /// Check for improper wording or characters in the phrase
         /// since the user may have edited the phrases be sure to sort them
@@ -701,10 +768,9 @@ namespace PDF_PhraseFinder
         {
             ClearLastResults();
             if (SaveEditedValues()) return;
-            FormWorkingFromTable();
             btnRunSearch.Enabled = false;
             btnStopScan.Enabled = true;
-            globals.GiveRunWarning();
+            //globals.GiveRunWarning();
             if (DoingPDF) RunSearch();
             else DocRunSearch();
             btnRunSearch.Enabled = true;
@@ -770,17 +836,19 @@ namespace PDF_PhraseFinder
             int iCol = ThisRC.X;
             if (iCol < 2) return; // allow editing the text or checkbox column
             iCurrentPage = -1;
+            iFoundInSentence = 0;
             if (phlist[iCurrentRow].strPages != "")
             {
                 ThisPageList = phlist[iCurrentRow].strPages.Split(',').Select(int.Parse).ToArray();
                 iCurrentPage = ThisPageList[0];
                 tbViewPage.Text = iCurrentPage.ToString();
-                CurrentActivePhrase = phlist[iCurrentRow].Phrase;
+                CurrentActivePhrase = phlist[iCurrentRow].Phrase; // this is used if match must be exact
                 if (DoingPDF) CurrentActivePhrase = CurrentActivePhrase.Trim(); // need to remove last space
                 // because the PDF extracts full words and DOCX will have punctuation.
                 // 8/26/2023 may need to change the validate to allow punctuation ???
                 iCurrentPagePhraseActive = 0; // start of first (at least one) phrase found on the page
                 iCurrentPagePhraseCount = phlist[iCurrentRow].WordsOnPage[0];
+                bUseFound = !phlist[iCurrentRow].Match;  // if not exact match then the phrase can change
                 SetNumeric_UpDn_Page();
                 AllowNextPhrase();
             }
@@ -852,13 +920,14 @@ namespace PDF_PhraseFinder
             {
                 InitialPhrase[i] = phlist[i].Phrase.Trim();
                 bUsePhrase[i] = phlist[i].Select;
+                bExactMatch[i] = phlist[i].Match;
             }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
             UpdatePhrasesFromTable();
-            globals.SavePhraseSettings(ref InitialPhrase, ref bUsePhrase);
+            globals.SavePhraseSettings(ref InitialPhrase, ref bUsePhrase, ref bExactMatch);
         }
 
         private void btnSelectAll_Click(object sender, EventArgs e)
@@ -939,6 +1008,9 @@ namespace PDF_PhraseFinder
         /// </summary>
         private bool SaveEditedValues()
         {
+            bAllExact = true;
+            string strTemp;
+            char[] delimiters = new char[] { ' ' };
             for (int i = 0; i < NumPhrases; i++)
             {
                 string str = (string)dgv_phrases.Rows[i].Cells[2].EditedFormattedValue;
@@ -950,6 +1022,23 @@ namespace PDF_PhraseFinder
                 bUsePhrase[i] = bUse;
                 phlist[i].Match = bMat;
                 bExactMatch[i] = bMat;
+                strTemp = phlist[i].Phrase;
+                strTemp = cbIgnoreCase.Checked ? strTemp.ToLower() : strTemp;
+                WorkingPhrases[i] = strTemp;
+                phlist[i].strInSeries = strTemp.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+                int n = phlist[i].strInSeries.Length;
+                if(n == 0)
+                {
+                    MessageBox.Show("Cannot have an empty phrase","ERROR",MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return true ;
+                }
+                if(n == 1 && !bMat)
+                {
+                    MessageBox.Show("If only one phrase word then must select MATCH", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    dgv_phrases.Rows[i].Cells[1].Value = true;
+                    return true;
+                }
+                if (bUse && !bMat) bAllExact = false;   // have at lest one boolean
             }
             bool bErr = ErrorsInTable();
             return bErr;
@@ -996,6 +1085,7 @@ namespace PDF_PhraseFinder
         private void AllowNextPhrase()
         {
             btnNext.Visible = iCurrentPagePhraseCount > 0;
+            btnViewDoc.Visible = iCurrentPagePhraseCount > 0;
         }
 
         private void btnNext_Click(object sender, EventArgs e)
@@ -1012,6 +1102,16 @@ namespace PDF_PhraseFinder
             else
             {
                 object FindText = CurrentActivePhrase;
+                if (bUseFound)
+                {
+                    iFoundInSentence++;
+                    if (iFoundInSentence == phlist[iCurrentRow].FoundInSeries.Count)
+                        iFoundInSentence = 0;
+                    FindText = phlist[iCurrentRow].FoundInSeries[iFoundInSentence];
+                    DocShowFoundPage();
+                    return;
+                }
+                tbMatches.Text += "looking for " + FindText + "\r\n";
                 oWord.Selection.Find.Execute(FindText);
             }
         }
@@ -1050,7 +1150,14 @@ namespace PDF_PhraseFinder
             }
             tbMatches.Text += "Opening Document...\r\n";
             oWord = new Word.Application();
-            oDoc = oWord.Application.Documents.Open(ofd.FileName);
+            try
+            {
+                oDoc = oWord.Application.Documents.Open(ofd.FileName);
+            }
+            catch (Exception ex)
+            {
+                return;
+            }
             oWord.Visible = false;
             oDoc.Activate();
             tbMatches.Text += "Document Open for searching\r\n";

@@ -36,7 +36,7 @@
             // 
             richTextBox1.Location = new Point(36, 12);
             richTextBox1.Name = "richTextBox1";
-            richTextBox1.Size = new Size(454, 281);
+            richTextBox1.Size = new Size(454, 339);
             richTextBox1.TabIndex = 0;
             richTextBox1.Text = resources.GetString("richTextBox1.Text");
             // 
@@ -44,7 +44,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(644, 305);
+            ClientSize = new Size(615, 393);
             Controls.Add(richTextBox1);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "help";

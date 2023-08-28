@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,8 +13,29 @@ namespace PDF_PhraseFinder
     {
         // BadLetters = ".,/|[]{}\\-_=!@#$%^&*()+`~,/;:'\"";
 
+        private static string strAlpha = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private static string sMyVersion = "1";
         public static string BadLetters = ",/|[]{}\\-_=!@#$%^&*()+`~,/;:'\"";
 
+        /// <summary>
+        /// return true if the word is a whole word "legal" in "illegal" is not a whole word.
+        /// </summary>
+        /// <param name="s"></param>
+        /// <param name="iLoc"></param>
+        /// <param name="iLen"></param>
+        /// <returns></returns>
+        public static bool IsWholeWord(string s, int iLoc, int iLen)
+        {
+            int n = s.Length;
+            if (iLoc == 0) return true; //first letter in sentence
+            string sLet = s.Substring(iLoc-1, 1);
+            if(strAlpha.Contains(sLet)) return false;
+            iLoc += iLen;
+            if (iLoc >= n) return true;
+            sLet = s.Substring(iLoc, 1);
+            if (strAlpha.Contains(sLet)) return false;
+            return true;
+        }
 
         public static string[] StrToStrs(string strIn)
         {
@@ -79,16 +101,18 @@ namespace PDF_PhraseFinder
         /// </summary>
         /// <param name="InitialPhrases"></param>
         /// <param name="bUsePhrases"></param>
-        public static void SavePhraseSettings(ref string[] InitialPhrases, ref bool[] bUsePhrases)
+        public static void SavePhraseSettings(ref string[] InitialPhrases, ref bool[] bUsePhrases, ref bool[] bMatch)
         {
             // should be at AppData\Local\Microsoft\YOUR APPLICATION NAME File name is user.config
             int i = 0;
             StringCollection scSavedWords = new StringCollection();
             foreach (string str1 in InitialPhrases)
             {
-                scSavedWords.Add((bUsePhrases[i++] ? "1:" : "0:") + str1);
+                scSavedWords.Add((bUsePhrases[i] ? "1:" : "0:") + (bMatch[i] ? "1:" : "0:") + str1);
+                i++;
             }
             Properties.Settings.Default.SearchPhrases = scSavedWords;
+            Properties.Settings.Default.Version = sMyVersion;
             Properties.Settings.Default.Save();
         }
 
@@ -105,7 +129,7 @@ namespace PDF_PhraseFinder
             string[] SavedSettings;
             StringCollection scSavedWords = new StringCollection();
             string sVers = Properties.Settings.Default.Version;
-            if (sVers != "1")
+            if (sVers != sMyVersion)
             {
                 // there are no setting so write them out using the program defaults
                 // this is only done once to get the checkbox value written to settings
@@ -117,7 +141,7 @@ namespace PDF_PhraseFinder
                     i++;
                 }
                 Properties.Settings.Default.SearchPhrases = scSavedWords;
-                Properties.Settings.Default.Version = "1";
+                Properties.Settings.Default.Version = sMyVersion;
                 Properties.Settings.Default.Save();
                 return i;
             }
@@ -133,8 +157,8 @@ namespace PDF_PhraseFinder
                 j = 0;
                 foreach (string str in scSavedWords)
                 {
-                    bUsePhrases[j] = "1" == str.Substring(0, 1);
-                    bExactMatch[j] = "1" == str.Substring(2, 1);
+                    bUsePhrases[j] = ("1:" == str.Substring(0, 2));
+                    bExactMatch[j] = ("1:" == str.Substring(2, 2));
                     InitialPhrases[j] = str.Substring(4);
                     j++;
                 }
@@ -221,7 +245,8 @@ application as Non Responding";
         public int iDupPageCnt;
         public int iLastPage;
         public string strPages = "";
-        public string[] strInSeries;
+        public string[] strInSeries; // the words making up the phrase.  "charging lunch"
+        public List<string> FoundInSeries = new List<string>();  // the found strings such as "charging xxx xxx lunch"
         public List<int> WordsOnPage = new List<int>();
         public int nFollowing; // number of words to check in sequence
 

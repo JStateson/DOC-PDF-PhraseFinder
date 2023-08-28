@@ -109,7 +109,7 @@ namespace PDF_PhraseFinder
             // OpenWord
             // 
             OpenWord.Name = "OpenWord";
-            OpenWord.Size = new Size(180, 22);
+            OpenWord.Size = new Size(131, 22);
             OpenWord.Text = "Open DOC";
             OpenWord.Click += OpenWord_Click;
             // 
@@ -117,14 +117,14 @@ namespace PDF_PhraseFinder
             // 
             openToolStripMenuItem.Enabled = false;
             openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(180, 22);
+            openToolStripMenuItem.Size = new Size(131, 22);
             openToolStripMenuItem.Text = "Open PDF";
             openToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(180, 22);
+            exitToolStripMenuItem.Size = new Size(131, 22);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
