@@ -1,4 +1,3 @@
-
 using Acrobat;
 //using AFORMAUTLib;
 using Microsoft.VisualBasic.FileIO;
@@ -43,6 +42,7 @@ namespace PDF_PhraseFinder
 
     public partial class PhraseFinderForm : Form
     {
+        private bool bMyDebug = false;  // enable to see informational messages
         private bool bAllExact = true;    // if false then we need to turn the sentences into a string[]
         private CAcroApp acroApp;
         private AcroAVDoc ThisDoc = null;
@@ -91,7 +91,7 @@ namespace PDF_PhraseFinder
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Adobe PRO or STANDARD is not present");
+                MessageBox.Show("Adobe PRO or STANDARD is not present or expired");
                 this.Close();
             }
             NumPhrases = globals.ObtainProjectSettings(ref InitialPhrase, ref bUsePhrase, ref bExactMatch);
@@ -131,7 +131,7 @@ namespace PDF_PhraseFinder
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Document is opened in another app.\r\n You may need to terminate Acrobat 32 DC");
+                MessageBox.Show("Document is opened in another app.\r\n You may need to terminate Acrobat 32 DC","ERROR-4");
                 AVDoc = null;
                 return false;
                 //throw;
@@ -189,7 +189,8 @@ namespace PDF_PhraseFinder
             }
             catch (Exception ex)
             {
-                int i = 0;
+                if(bMyDebug)tbMatches.Text += ex.Message + "\r\n";
+                MessageBox.Show("Document may be opened by another app", "WARNING"); ;
             }
             tbMatches.Text += "Document Open for searching\r\n";
             searchPanel.Enabled = GetPageCount();
@@ -238,7 +239,7 @@ namespace PDF_PhraseFinder
             catch
             {
                 tbMatches.Text = "You may not have logged into Adobe\r\n";
-                tbMatches.Text += "Missing Adobe DLL (bad intall)\r\n or bad PDF file:" + tbPdfName.Text;
+                tbMatches.Text += "Missing Adobe DLL (bad install)\r\n or bad PDF file:" + tbPdfName.Text;
                 return false;
             }
             return true;
@@ -364,6 +365,8 @@ namespace PDF_PhraseFinder
             }
             catch (Exception ex)
             {
+                if (bMyDebug) tbMatches.Text += ex.Message + "\r\n";
+                MessageBox.Show("You may have closed the document\r\nExit this program and start over", "ERROR-1"); ;
                 return false;
             }
             // Get end position of current page                                
@@ -399,7 +402,6 @@ namespace PDF_PhraseFinder
             catch (Exception ex)
             {
                 MessageBox.Show("failed to read at page " + p.ToString());
-                tbMatches.Text += "failed to read at page " + p.ToString();
                 return false;
             }
 
@@ -416,8 +418,9 @@ namespace PDF_PhraseFinder
                         BindingFlags.Instance,
                         null, jsObj, getPageNthWordParam);
                 }
-                catch (Exception e)
+                catch (Exception ex)
                 {
+                    if (bMyDebug) tbMatches.Text += ex.Message + "\r\n";
                     word = "";
                     iNullCount++;
                 }
@@ -474,7 +477,8 @@ namespace PDF_PhraseFinder
                 FindText = phlist[iCurrentRow].FoundInSeries[iFoundInSentence];
             }
             //oWord.Selection.ClearFormatting();
-            tbMatches.Text += "looking for " + FindText + "\r\n";
+            if(bMyDebug)
+                tbMatches.Text += "looking for " + FindText + "\r\n";
             oWord.Selection.Find.Execute(FindText);
         }
 
@@ -503,7 +507,8 @@ namespace PDF_PhraseFinder
                 }
                 catch (Exception ex)
                 {
-                    int i = 0;
+                    if (bMyDebug) tbMatches.Text += ex.Message + "\r\n";
+                    MessageBox.Show("You may have closed the document\r\nExit this program and start over", "ERROR-2"); ;
                 }
             }
         }
@@ -1111,7 +1116,8 @@ namespace PDF_PhraseFinder
                     DocShowFoundPage();
                     return;
                 }
-                tbMatches.Text += "looking for " + FindText + "\r\n";
+                if (bMyDebug)
+                    tbMatches.Text += "looking for " + FindText + "\r\n";
                 oWord.Selection.Find.Execute(FindText);
             }
         }
@@ -1156,11 +1162,14 @@ namespace PDF_PhraseFinder
             }
             catch (Exception ex)
             {
+                if (bMyDebug) tbMatches.Text += ex.Message + "\r\n";
+                MessageBox.Show("You may have closed the document, please exit the program", "ERROR-3");
                 return;
             }
             oWord.Visible = false;
             oDoc.Activate();
-            tbMatches.Text += "Document Open for searching\r\n";
+            if(bMyDebug)
+                tbMatches.Text += "Document Open for searching\r\n";
             searchPanel.Enabled = DOCGetPageCount();
             gbPageCtrl.Visible = searchPanel.Enabled;
             DoingPDF = false;
