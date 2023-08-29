@@ -75,20 +75,7 @@ namespace PDF_PhraseFinder
             tbPhrases.Text = strOut;
         }
 
-        private void btnChkErr_Click(object sender, EventArgs e)
-        {
-            int i = 0;
-            string[] strDOC = globals.StrToStrs(tbPhrases.Text);
-            int n = strDOC.Length;
-            string[] strPDF = new string[n];
-            foreach (string strA in strDOC)
-            {
-                strPDF[i] = globals.RemovePunctuation(strA);
-                i++;
-            }
-            PDFedits EditSetup = new PDFedits(ref strDOC, ref strPDF);
-            EditSetup.ShowDialog();
-        }
+
 
         private bool AddSelectCheckmarks(bool bChk)
         {

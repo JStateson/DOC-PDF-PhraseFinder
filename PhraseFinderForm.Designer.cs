@@ -36,7 +36,6 @@ namespace PDF_PhraseFinder
             MStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             OpenWord = new ToolStripMenuItem();
-            openToolStripMenuItem = new ToolStripMenuItem();
             exitToolStripMenuItem = new ToolStripMenuItem();
             helpToolStripMenuItem = new ToolStripMenuItem();
             settingsToolStripMenuItem = new ToolStripMenuItem();
@@ -101,7 +100,7 @@ namespace PDF_PhraseFinder
             // 
             // fileToolStripMenuItem
             // 
-            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { OpenWord, openToolStripMenuItem, exitToolStripMenuItem });
+            fileToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { OpenWord, exitToolStripMenuItem });
             fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             fileToolStripMenuItem.Size = new Size(37, 20);
             fileToolStripMenuItem.Text = "File";
@@ -109,22 +108,14 @@ namespace PDF_PhraseFinder
             // OpenWord
             // 
             OpenWord.Name = "OpenWord";
-            OpenWord.Size = new Size(131, 22);
+            OpenWord.Size = new Size(180, 22);
             OpenWord.Text = "Open DOC";
             OpenWord.Click += OpenWord_Click;
-            // 
-            // openToolStripMenuItem
-            // 
-            openToolStripMenuItem.Enabled = false;
-            openToolStripMenuItem.Name = "openToolStripMenuItem";
-            openToolStripMenuItem.Size = new Size(131, 22);
-            openToolStripMenuItem.Text = "Open PDF";
-            openToolStripMenuItem.Click += openToolStripMenuItem_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(131, 22);
+            exitToolStripMenuItem.Size = new Size(180, 22);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
@@ -550,7 +541,6 @@ namespace PDF_PhraseFinder
         private OpenFileDialog ofd;
         private ToolTip toolTip1;
         private ToolStripMenuItem fileToolStripMenuItem;
-        private ToolStripMenuItem openToolStripMenuItem;
         private ToolStripMenuItem exitToolStripMenuItem;
         private ToolStripMenuItem helpToolStripMenuItem;
         private GroupBox groupBox1;

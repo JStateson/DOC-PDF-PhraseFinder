@@ -8,7 +8,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
     <Platforms>AnyCPU;x64</Platforms>
-    <StartupObject>PDF_PhraseFinder.Program</StartupObject>
+    <StartupObject></StartupObject>
     <ApplicationIcon>usda.ico</ApplicationIcon>
     <SupportedOSPlatformVersion>8.0</SupportedOSPlatformVersion>
   </PropertyGroup>

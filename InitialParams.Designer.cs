@@ -35,7 +35,6 @@
             btnUnChk = new Button();
             bltnChkAll = new Button();
             textBox1 = new TextBox();
-            btnChkErr = new Button();
             label1 = new Label();
             btnCancel = new Button();
             btnApply = new Button();
@@ -50,7 +49,6 @@
             // 
             groupBox2.Controls.Add(groupBox1);
             groupBox2.Controls.Add(textBox1);
-            groupBox2.Controls.Add(btnChkErr);
             groupBox2.Controls.Add(label1);
             groupBox2.Controls.Add(btnCancel);
             groupBox2.Controls.Add(btnApply);
@@ -110,18 +108,6 @@
             textBox1.Size = new Size(448, 151);
             textBox1.TabIndex = 8;
             textBox1.Text = resources.GetString("textBox1.Text");
-            // 
-            // btnChkErr
-            // 
-            btnChkErr.Enabled = false;
-            btnChkErr.Location = new Point(526, 295);
-            btnChkErr.Name = "btnChkErr";
-            btnChkErr.Size = new Size(102, 23);
-            btnChkErr.TabIndex = 7;
-            btnChkErr.Text = "Show PDF edits";
-            toolTip1.SetToolTip(btnChkErr, "Must be 3 characters or more");
-            btnChkErr.UseVisualStyleBackColor = true;
-            btnChkErr.Click += btnChkErr_Click;
             // 
             // label1
             // 
@@ -196,7 +182,6 @@
         private Button btnClear;
         private Button btnCancel;
         private Label label1;
-        private Button btnChkErr;
         private TextBox textBox1;
         private Button btnUnChk;
         private Button bltnChkAll;
