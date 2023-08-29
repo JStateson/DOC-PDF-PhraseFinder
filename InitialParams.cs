@@ -11,7 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace PDF_PhraseFinder
+namespace DOC_PhraseFinder
 {
     public partial class InitialParams : Form
     {

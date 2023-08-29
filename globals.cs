@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PDF_PhraseFinder
+namespace DOC_PhraseFinder
 {
     internal static class globals
     {
@@ -170,8 +171,7 @@ namespace PDF_PhraseFinder
         {
             Properties.Settings.Default.IsLastFolder = LocalSettings.strLastFolder;
             Properties.Settings.Default.bIgnoreCase = LocalSettings.bIgnoreCase;
-            Properties.Settings.Default.PDFZoomInx = LocalSettings.PDFZoomInx;
-            Properties.Settings.Default.PDFZoomPCT = LocalSettings.PDFZoomPCT;
+            Properties.Settings.Default.bWholeWord = LocalSettings.bWholeWord;
             Properties.Settings.Default.Save();
         }
 
@@ -179,8 +179,7 @@ namespace PDF_PhraseFinder
         {
             LocalSettings.strLastFolder = Properties.Settings.Default.IsLastFolder;
             LocalSettings.bIgnoreCase = Properties.Settings.Default.bIgnoreCase;
-            LocalSettings.PDFZoomInx = Properties.Settings.Default.PDFZoomInx;
-            LocalSettings.PDFZoomPCT = Properties.Settings.Default.PDFZoomPCT;
+            LocalSettings.bWholeWord = Properties.Settings.Default.bWholeWord;
             if (LocalSettings.strLastFolder == "")
             {
                 LocalSettings.strLastFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -193,10 +192,14 @@ namespace PDF_PhraseFinder
     public class cLocalSettings         // used to restore user settings
     {
         public bool bExitEarly;             // for debugging or demo purpose only examine a limited number of page
-        public string strLastFolder = "";     // where last PDF was obtained
+        public string strLastFolder = "";     // where last DOC was obtained
         public bool bIgnoreCase = true;
-        public int PDFZoomPCT = 75; // percent but not used unless inx correlelates
-        public int PDFZoomInx = 1;  // AVZoomFitPage
+        public bool bWholeWord = true;
+    }
+
+    public class cSeriesOnPage
+    {
+        public List<string> SeriesOnPage = new List<string>();
     }
 
     public class cPhraseTable
@@ -210,7 +213,7 @@ namespace PDF_PhraseFinder
         public int iLastPage;
         public string strPages = "";
         public string[] strInSeries; // the words making up the phrase.  "charging lunch"
-        public List<string> FoundInSeries = new List<string>();  // the found strings such as "charging xxx xxx lunch"
+        public List<cSeriesOnPage> FoundInSeries = new List<cSeriesOnPage>();  // the found strings such as "charging xxx xxx lunch"
         public List<int> WordsOnPage = new List<int>();
         public int nFollowing; // number of words to check in sequence
 
@@ -252,7 +255,7 @@ namespace PDF_PhraseFinder
 
         public void AddPage(int jPage) // do not add the same page twice
         {
-            int iPage = jPage + 1;
+            int iPage = jPage;
             if (strPages == "")
             {
                 strPages = iPage.ToString();

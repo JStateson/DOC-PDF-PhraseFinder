@@ -1,4 +1,4 @@
-﻿namespace PDF_PhraseFinder
+﻿namespace DOC_PhraseFinder
 {
     partial class help
     {

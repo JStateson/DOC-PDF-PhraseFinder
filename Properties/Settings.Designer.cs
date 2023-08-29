@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PDF_PhraseFinder.Properties {
+namespace DOC_PhraseFinder.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -60,30 +60,6 @@ namespace PDF_PhraseFinder.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1")]
-        public int PDFZoomInx {
-            get {
-                return ((int)(this["PDFZoomInx"]));
-            }
-            set {
-                this["PDFZoomInx"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("100")]
-        public int PDFZoomPCT {
-            get {
-                return ((int)(this["PDFZoomPCT"]));
-            }
-            set {
-                this["PDFZoomPCT"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string Version {
             get {
@@ -91,6 +67,18 @@ namespace PDF_PhraseFinder.Properties {
             }
             set {
                 this["Version"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool bWholeWord {
+            get {
+                return ((bool)(this["bWholeWord"]));
+            }
+            set {
+                this["bWholeWord"] = value;
             }
         }
     }
