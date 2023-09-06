@@ -1,5 +1,3 @@
-using Acrobat;
-//using AFORMAUTLib;
 using Microsoft.VisualBasic.FileIO;
 using System.Collections.Specialized;
 using System.Diagnostics.CodeAnalysis;
@@ -17,6 +15,8 @@ using System.Reflection.Metadata;
 using System;
 using Application = System.Windows.Forms.Application;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using DOC_PhraseFinder.Properties;
 
 //using System.Timers;
 
@@ -78,11 +78,9 @@ namespace DOC_PhraseFinder
             FillPhrases();
             tbPdfName.Text = " (v) 1.0 (c)Stateson";
             //globals.GiveInitialWarning();
-            //aTimer = new System.Timers.Timer(100);
-            //aTimer.Enabled = false;
-            //aTimer.Elapsed += OnTimedEvent;
-            //aTimer.AutoReset = false;
-
+            //pictureBox1.Location = new System.Drawing.Point(312, 31);
+            //pictureBox1.Size = new System.Drawing.Size(300, 166);
+            //pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
         }
 
 
@@ -111,7 +109,9 @@ namespace DOC_PhraseFinder
             }
             return lCnt;
         }
-
+        /// <summary>
+        /// this allows the GUI to updates the display else the progress bar is not shown getting longer
+        /// </summary>
         private void AllowProgressEvent()
         {
             pbarLoading.Increment(1);
@@ -121,22 +121,22 @@ namespace DOC_PhraseFinder
         }
 
 
-
         /// <summary>
         /// strIn is a sentence or null
         /// i is index into the phlist and associated tables (use, match, phases, working)
         /// this function is only used when searching for combination of words in a sentence
         /// need to look for a period to stop the search!!! assume period with two spaces
         /// </summary>
-        /// <param name="strIn"></param>
-        /// <param name="i"></param>
+        /// <param name="strIn"></param> input string to be looked at
+        /// <param name="i"></param> index into the table of phrases
+        /// n was the length in characters of the input string
         /// <returns></returns>
         private string FindAnyMatch(string strIn, int i, int n)
         {
             int iStart = 0;
             int i1 = -1;
             string EndSent = ". "; // NOT ALL USE TWO SPACES !!!! TODO TO DO
-            string candidate = "";
+            string candidate = ""; // this is the candidate sentence that has been found but might be 2 or more sentences
             foreach (string str in phlist[i].strInSeries)
             {
                 int iLoc = strIn.Substring(iStart).IndexOf(str);
@@ -154,6 +154,11 @@ namespace DOC_PhraseFinder
                 if (iStart >= n) return "";
             }
             candidate = strIn.Substring(i1, iStart - i1);
+            //
+            // search option to consider
+            // commenting out line "if (candidate.Contains(EndSent... will cause the code to search beyond the period space.
+            // in other words it searches for phrases in spanning more than one sentence
+            //
             if (candidate.Contains(EndSent)) return "";
             return candidate;
         }
@@ -163,8 +168,8 @@ namespace DOC_PhraseFinder
         /// </summary>
         /// <param name="strBig1"></param>
         /// <param name="Bigs"></param>
-        /// <param name="j"></param>
-        /// <param name="p"></param>
+        /// <param name="j"></param> index into the phrase table
+        /// <param name="p"></param> p is the page 
         private void FindMatches(ref string strBig1, ref string[] Bigs, int j, int p)
         {
             string strBig = globals.RemoveWhiteSpace(strBig1);
@@ -394,7 +399,12 @@ namespace DOC_PhraseFinder
                 cpt.InitPhrase(InitialPhrase[i], bUsePhrase[i], bExactMatch[i]);
                 phlist.Add(cpt);
             }
-            dgv_phrases.DataSource = phlist.ToArray();
+            dgv_phrases.DataSource = phlist.ToArray(); // this is how the data grid view is loaded
+            dgv_phrases.Columns["Match"].DefaultCellStyle.Alignment =
+    DataGridViewContentAlignment.MiddleCenter;
+            dgv_phrases.Columns["Match"].HeaderText = "Exact Match";
+            dgv_phrases.Columns["Number"].HeaderText = "Matches Found";
+            ;
             //MessageBox.Show("Got this far?");  // used for debugging an internal fault .NET7 ???
             //problem does not occur anymore
             //https://learn.microsoft.com/en-us/answers/questions/1340009/indexoutofrangeexception-but-error-occurs-only-for
@@ -827,7 +837,7 @@ namespace DOC_PhraseFinder
             object MyWholeWord = cbWholeWord.Checked;
             iCurrentPagePhraseActive++;
             if (bUseFound)
-            { 
+            {
                 if (iCurrentPagePhraseActive == iCurrentPagePhraseCount)
                 {
                     // need to bring up the page again so the first phrase can be seen
@@ -893,11 +903,15 @@ namespace DOC_PhraseFinder
                 tbMatches.Text += "Document Open for searching\r\n";
             searchPanel.Enabled = GetPageCount();
             gbPageCtrl.Visible = searchPanel.Enabled;
+
+            //pictureBox1.Visible = false;
+
         }
 
         private void cbWholeWord_CheckedChanged(object sender, EventArgs e)
         {
             LocalSettings.bWholeWord = cbWholeWord.Checked;
         }
+
     }
 }

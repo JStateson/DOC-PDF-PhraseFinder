@@ -61,12 +61,42 @@ namespace DOC_PhraseFinder.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap FNS {
+            get {
+                object obj = ResourceManager.GetObject("FNS", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon usda {
             get {
                 object obj = ResourceManager.GetObject("usda", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap USDA_FNS {
+            get {
+                object obj = ResourceManager.GetObject("USDA FNS", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap USDA_Food_and_Nutrition_Service {
+            get {
+                object obj = ResourceManager.GetObject("USDA_Food_and_Nutrition_Service", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

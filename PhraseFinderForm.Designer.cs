@@ -1,5 +1,4 @@
-﻿using Acrobat;
-using AFORMAUTLib;
+﻿
 
 namespace DOC_PhraseFinder
 {
@@ -32,6 +31,7 @@ namespace DOC_PhraseFinder
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PhraseFinderForm));
             MStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
@@ -64,6 +64,7 @@ namespace DOC_PhraseFinder
             pbarLoading = new ProgressBar();
             btnRunSearch = new Button();
             groupBox6 = new GroupBox();
+            pictureBox1 = new PictureBox();
             groupBox10 = new GroupBox();
             cbIgnoreCase = new CheckBox();
             groupBox9 = new GroupBox();
@@ -82,6 +83,7 @@ namespace DOC_PhraseFinder
             searchPanel.SuspendLayout();
             groupBox4.SuspendLayout();
             groupBox6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             groupBox10.SuspendLayout();
             groupBox9.SuspendLayout();
             groupBox8.SuspendLayout();
@@ -106,14 +108,14 @@ namespace DOC_PhraseFinder
             // OpenWord
             // 
             OpenWord.Name = "OpenWord";
-            OpenWord.Size = new Size(131, 22);
+            OpenWord.Size = new Size(180, 22);
             OpenWord.Text = "Open DOC";
             OpenWord.Click += OpenWord_Click;
             // 
             // exitToolStripMenuItem
             // 
             exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            exitToolStripMenuItem.Size = new Size(131, 22);
+            exitToolStripMenuItem.Size = new Size(180, 22);
             exitToolStripMenuItem.Text = "Exit";
             exitToolStripMenuItem.Click += exitToolStripMenuItem_Click;
             // 
@@ -194,6 +196,14 @@ namespace DOC_PhraseFinder
             // 
             // dgv_phrases
             // 
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgv_phrases.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgv_phrases.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgv_phrases.Location = new Point(312, 31);
             dgv_phrases.Name = "dgv_phrases";
@@ -370,6 +380,7 @@ namespace DOC_PhraseFinder
             // 
             // groupBox6
             // 
+            groupBox6.Controls.Add(pictureBox1);
             groupBox6.Controls.Add(groupBox10);
             groupBox6.Controls.Add(groupBox9);
             groupBox6.Controls.Add(groupBox8);
@@ -381,13 +392,23 @@ namespace DOC_PhraseFinder
             groupBox6.TabStop = false;
             groupBox6.Text = "Phrase Searching";
             // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(16, 209);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(147, 106);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 7;
+            pictureBox1.TabStop = false;
+            // 
             // groupBox10
             // 
             groupBox10.Controls.Add(cbWholeWord);
             groupBox10.Controls.Add(cbIgnoreCase);
             groupBox10.Location = new Point(16, 31);
             groupBox10.Name = "groupBox10";
-            groupBox10.Size = new Size(131, 203);
+            groupBox10.Size = new Size(131, 146);
             groupBox10.TabIndex = 5;
             groupBox10.TabStop = false;
             groupBox10.Text = "Local Settings";
@@ -474,6 +495,7 @@ namespace DOC_PhraseFinder
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackgroundImageLayout = ImageLayout.Zoom;
             ClientSize = new Size(1205, 586);
             Controls.Add(gbPageCtrl);
             Controls.Add(tbMatches);
@@ -504,6 +526,7 @@ namespace DOC_PhraseFinder
             groupBox4.ResumeLayout(false);
             groupBox4.PerformLayout();
             groupBox6.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             groupBox10.ResumeLayout(false);
             groupBox10.PerformLayout();
             groupBox9.ResumeLayout(false);
@@ -553,5 +576,6 @@ namespace DOC_PhraseFinder
         private CheckBox cbIgnoreCase;
         private GroupBox groupBox10;
         private ToolStripMenuItem OpenWord;
+        private PictureBox pictureBox1;
     }
 }
