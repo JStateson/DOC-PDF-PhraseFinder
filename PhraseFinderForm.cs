@@ -479,6 +479,7 @@ namespace DOC_PhraseFinder
             string[] pTemp = new string[NumPhrases];
             bool[] bTemp = new bool[NumPhrases];
             bool[] bExact = new bool[NumPhrases];
+            bool[] bExactMatch = new bool[NumPhrases];
             FormSortIndex();
             for (int i = 0; i < NumPhrases; i++)
             {
@@ -547,6 +548,7 @@ namespace DOC_PhraseFinder
             }
             InitialPhrase = new string[n];
             bUsePhrase = new bool[n];
+            bExactMatch = new bool[n];
             for (int i = 0; i < n - 1; i++)
             {
                 InitialPhrase[i] = OldPhrases[i];
