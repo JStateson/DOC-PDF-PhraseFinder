@@ -914,6 +914,5 @@ namespace DOC_PhraseFinder
         {
             LocalSettings.bWholeWord = cbWholeWord.Checked;
         }
-
     }
 }
