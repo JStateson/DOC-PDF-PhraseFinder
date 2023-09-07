@@ -353,10 +353,7 @@ namespace DOC_PhraseFinder
                         return false;
                     }
                     AllowProgressEvent();
-                    if ((p % 10) == 0)
-                    {
-                        tbpageNum.Text = p.ToString();
-                    }
+
                     if (bStopEarly)
                     {
                         bStopEarly = false;
@@ -879,7 +876,7 @@ namespace DOC_PhraseFinder
                 searchPanel.Enabled = false;
                 return;
             }
-            tbPdfName.Text = ofd.FileName;
+            tbPdfName.Text = Path.GetFileName(ofd.FileName);
             LocalSettings.strLastFolder = Path.GetDirectoryName(ofd.FileName);
             if (oDoc != null)
             {

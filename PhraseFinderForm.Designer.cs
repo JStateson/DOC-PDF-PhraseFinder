@@ -31,7 +31,7 @@ namespace DOC_PhraseFinder
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PhraseFinderForm));
             MStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
@@ -52,18 +52,14 @@ namespace DOC_PhraseFinder
             btnViewDoc = new Button();
             cbWholeWord = new CheckBox();
             groupBox1 = new GroupBox();
-            groupBox3 = new GroupBox();
             tbTotalMatch = new TextBox();
-            groupBox2 = new GroupBox();
             tbNumPages = new TextBox();
             tbPdfName = new TextBox();
             groupBox6 = new GroupBox();
             searchPanel = new GroupBox();
-            groupBox4 = new GroupBox();
-            tbpageNum = new TextBox();
-            btnStopScan = new Button();
             pbarLoading = new ProgressBar();
             btnRunSearch = new Button();
+            btnStopScan = new Button();
             pictureBox1 = new PictureBox();
             groupBox10 = new GroupBox();
             cbIgnoreCase = new CheckBox();
@@ -73,16 +69,15 @@ namespace DOC_PhraseFinder
             btnSelectAll = new Button();
             groupBox8 = new GroupBox();
             tbMatches = new TextBox();
+            label1 = new Label();
+            label2 = new Label();
             MStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudPage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgv_phrases).BeginInit();
             gbPageCtrl.SuspendLayout();
             groupBox1.SuspendLayout();
-            groupBox3.SuspendLayout();
-            groupBox2.SuspendLayout();
             groupBox6.SuspendLayout();
             searchPanel.SuspendLayout();
-            groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             groupBox10.SuspendLayout();
             groupBox9.SuspendLayout();
@@ -196,19 +191,19 @@ namespace DOC_PhraseFinder
             // 
             // dgv_phrases
             // 
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = SystemColors.Control;
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            dgv_phrases.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle7.BackColor = SystemColors.Control;
+            dataGridViewCellStyle7.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle7.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle7.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
+            dgv_phrases.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
             dgv_phrases.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv_phrases.Location = new Point(302, 22);
+            dgv_phrases.Location = new Point(302, 38);
             dgv_phrases.Name = "dgv_phrases";
             dgv_phrases.RowTemplate.Height = 25;
-            dgv_phrases.Size = new Size(506, 486);
+            dgv_phrases.Size = new Size(506, 470);
             dgv_phrases.TabIndex = 0;
             toolTip1.SetToolTip(dgv_phrases, "click any row to select a phrase  for page viewing");
             dgv_phrases.Click += dgv_phrases_Click;
@@ -262,46 +257,27 @@ namespace DOC_PhraseFinder
             // 
             // groupBox1
             // 
-            groupBox1.Controls.Add(groupBox3);
-            groupBox1.Controls.Add(groupBox2);
+            groupBox1.Controls.Add(label2);
+            groupBox1.Controls.Add(label1);
+            groupBox1.Controls.Add(tbNumPages);
+            groupBox1.Controls.Add(tbTotalMatch);
             groupBox1.Controls.Add(tbPdfName);
             groupBox1.Location = new Point(871, 27);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(302, 152);
             groupBox1.TabIndex = 1;
             groupBox1.TabStop = false;
-            groupBox1.Text = "Active DOC";
-            // 
-            // groupBox3
-            // 
-            groupBox3.Controls.Add(tbTotalMatch);
-            groupBox3.Location = new Point(140, 70);
-            groupBox3.Name = "groupBox3";
-            groupBox3.Size = new Size(108, 67);
-            groupBox3.TabIndex = 0;
-            groupBox3.TabStop = false;
-            groupBox3.Text = "Total Matches";
             // 
             // tbTotalMatch
             // 
-            tbTotalMatch.Location = new Point(21, 28);
+            tbTotalMatch.Location = new Point(190, 97);
             tbTotalMatch.Name = "tbTotalMatch";
             tbTotalMatch.Size = new Size(58, 23);
             tbTotalMatch.TabIndex = 1;
             // 
-            // groupBox2
-            // 
-            groupBox2.Controls.Add(tbNumPages);
-            groupBox2.Location = new Point(23, 70);
-            groupBox2.Name = "groupBox2";
-            groupBox2.Size = new Size(104, 67);
-            groupBox2.TabIndex = 1;
-            groupBox2.TabStop = false;
-            groupBox2.Text = "Number Pages";
-            // 
             // tbNumPages
             // 
-            tbNumPages.Location = new Point(24, 29);
+            tbNumPages.Location = new Point(190, 63);
             tbNumPages.Name = "tbNumPages";
             tbNumPages.Size = new Size(58, 23);
             tbNumPages.TabIndex = 0;
@@ -310,7 +286,7 @@ namespace DOC_PhraseFinder
             // 
             tbPdfName.BackColor = SystemColors.ControlLightLight;
             tbPdfName.ForeColor = SystemColors.MenuHighlight;
-            tbPdfName.Location = new Point(23, 28);
+            tbPdfName.Location = new Point(21, 22);
             tbPdfName.Name = "tbPdfName";
             tbPdfName.ReadOnly = true;
             tbPdfName.Size = new Size(261, 23);
@@ -333,47 +309,17 @@ namespace DOC_PhraseFinder
             // 
             // searchPanel
             // 
-            searchPanel.Controls.Add(groupBox4);
             searchPanel.Controls.Add(pbarLoading);
             searchPanel.Controls.Add(btnRunSearch);
+            searchPanel.Controls.Add(btnStopScan);
             searchPanel.Enabled = false;
             searchPanel.ForeColor = SystemColors.ControlText;
             searchPanel.Location = new Point(7, 22);
             searchPanel.Name = "searchPanel";
-            searchPanel.Size = new Size(268, 160);
+            searchPanel.Size = new Size(268, 122);
             searchPanel.TabIndex = 8;
             searchPanel.TabStop = false;
             searchPanel.Text = "Search Progress";
-            // 
-            // groupBox4
-            // 
-            groupBox4.Controls.Add(tbpageNum);
-            groupBox4.Controls.Add(btnStopScan);
-            groupBox4.Location = new Point(8, 79);
-            groupBox4.Name = "groupBox4";
-            groupBox4.Size = new Size(253, 67);
-            groupBox4.TabIndex = 3;
-            groupBox4.TabStop = false;
-            groupBox4.Text = "Exit Early";
-            // 
-            // tbpageNum
-            // 
-            tbpageNum.Location = new Point(181, 29);
-            tbpageNum.Name = "tbpageNum";
-            tbpageNum.Size = new Size(51, 23);
-            tbpageNum.TabIndex = 1;
-            // 
-            // btnStopScan
-            // 
-            btnStopScan.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            btnStopScan.ForeColor = Color.Red;
-            btnStopScan.Location = new Point(31, 28);
-            btnStopScan.Name = "btnStopScan";
-            btnStopScan.Size = new Size(131, 23);
-            btnStopScan.TabIndex = 0;
-            btnStopScan.Text = "Click to stop";
-            btnStopScan.UseVisualStyleBackColor = true;
-            btnStopScan.Click += btnStopScan_Click;
             // 
             // pbarLoading
             // 
@@ -393,6 +339,18 @@ namespace DOC_PhraseFinder
             btnRunSearch.Text = "Run Search";
             btnRunSearch.UseVisualStyleBackColor = true;
             btnRunSearch.Click += btnRunSearch_Click;
+            // 
+            // btnStopScan
+            // 
+            btnStopScan.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
+            btnStopScan.ForeColor = Color.Red;
+            btnStopScan.Location = new Point(7, 77);
+            btnStopScan.Name = "btnStopScan";
+            btnStopScan.Size = new Size(131, 23);
+            btnStopScan.TabIndex = 0;
+            btnStopScan.Text = "Click to stop";
+            btnStopScan.UseVisualStyleBackColor = true;
+            btnStopScan.Click += btnStopScan_Click;
             // 
             // pictureBox1
             // 
@@ -493,6 +451,24 @@ namespace DOC_PhraseFinder
             tbMatches.TabIndex = 5;
             tbMatches.Text = resources.GetString("tbMatches.Text");
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(39, 66);
+            label1.Name = "label1";
+            label1.Size = new Size(103, 15);
+            label1.TabIndex = 2;
+            label1.Text = "Total Pages In Doc";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(39, 100);
+            label2.Name = "label2";
+            label2.Size = new Size(117, 15);
+            label2.TabIndex = 3;
+            label2.Text = "Total Matches Found";
+            // 
             // PhraseFinderForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -509,7 +485,7 @@ namespace DOC_PhraseFinder
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "PhraseFinderForm";
-            Text = "USDA / FNS";
+            Text = "USDA/FNS  -  Phrase Finder for Word Documents";
             FormClosing += PhraseFinderForm_FormClosing;
             MStrip.ResumeLayout(false);
             MStrip.PerformLayout();
@@ -519,14 +495,8 @@ namespace DOC_PhraseFinder
             gbPageCtrl.PerformLayout();
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
-            groupBox3.ResumeLayout(false);
-            groupBox3.PerformLayout();
-            groupBox2.ResumeLayout(false);
-            groupBox2.PerformLayout();
             groupBox6.ResumeLayout(false);
             searchPanel.ResumeLayout(false);
-            groupBox4.ResumeLayout(false);
-            groupBox4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             groupBox10.ResumeLayout(false);
             groupBox10.PerformLayout();
@@ -546,8 +516,6 @@ namespace DOC_PhraseFinder
         private ToolStripMenuItem helpToolStripMenuItem;
         private GroupBox groupBox1;
         private TextBox tbPdfName;
-        private GroupBox groupBox3;
-        private GroupBox groupBox2;
         private TextBox tbTotalMatch;
         private TextBox tbNumPages;
         private GroupBox groupBox6;
@@ -573,10 +541,10 @@ namespace DOC_PhraseFinder
         private ToolStripMenuItem OpenWord;
         private PictureBox pictureBox1;
         private GroupBox searchPanel;
-        private GroupBox groupBox4;
-        private TextBox tbpageNum;
         private Button btnStopScan;
         private ProgressBar pbarLoading;
         private Button btnRunSearch;
+        private Label label2;
+        private Label label1;
     }
 }
