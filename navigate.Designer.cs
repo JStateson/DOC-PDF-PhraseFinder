@@ -30,6 +30,8 @@
         {
             tvPhrases = new TreeView();
             btnNext = new Button();
+            label1 = new Label();
+            btnExpand = new Button();
             SuspendLayout();
             // 
             // tvPhrases
@@ -44,7 +46,7 @@
             // 
             btnNext.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
             btnNext.ForeColor = Color.Green;
-            btnNext.Location = new Point(98, 12);
+            btnNext.Location = new Point(12, 12);
             btnNext.Name = "btnNext";
             btnNext.Size = new Size(136, 23);
             btnNext.TabIndex = 1;
@@ -53,21 +55,45 @@
             btnNext.Visible = false;
             btnNext.Click += btnNext_Click;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(170, 12);
+            label1.Name = "label1";
+            label1.Size = new Size(135, 30);
+            label1.TabIndex = 2;
+            label1.Text = "Red indicates more than\r\none on same page";
+            // 
+            // btnExpand
+            // 
+            btnExpand.Location = new Point(328, 12);
+            btnExpand.Name = "btnExpand";
+            btnExpand.Size = new Size(97, 23);
+            btnExpand.TabIndex = 3;
+            btnExpand.Text = "Expand all";
+            btnExpand.UseVisualStyleBackColor = true;
+            btnExpand.Click += btnExpand_Click;
+            // 
             // navigate
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(437, 450);
+            Controls.Add(btnExpand);
+            Controls.Add(label1);
             Controls.Add(btnNext);
             Controls.Add(tvPhrases);
             Name = "navigate";
             Text = "navigate";
             ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
 
         private TreeView tvPhrases;
         private Button btnNext;
+        private Label label1;
+        private Button btnExpand;
     }
 }

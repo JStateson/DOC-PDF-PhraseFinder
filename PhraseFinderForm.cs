@@ -253,7 +253,7 @@ namespace DOC_PhraseFinder
             {
                 if (bMyDebug)
                     tbMatches.Text += ex.Message + "\r\n";
-                MessageBox.Show("You may have closed the document\r\nExit this program and start over", "ERROR-1"); ;
+                MessageBox.Show("You may have closed the document\r\nExit this program and start over\r\nYou may have to terminate microsoft word", "ERROR-1"); ;
                 return false;
             }
             // Get end position of current page                                
@@ -950,6 +950,8 @@ namespace DOC_PhraseFinder
                 return;
             }
             oWord.Visible = false;
+            oDoc.ActiveWindow.View.Type = WdViewType.wdPrintView;
+            //oDoc.ActiveWindow.SetFocus();
             oDoc.Activate();
             if (bMyDebug)
                 tbMatches.Text += "Document Open for searching\r\n";

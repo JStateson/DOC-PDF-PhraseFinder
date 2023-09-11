@@ -15,6 +15,7 @@ namespace DOC_PhraseFinder
         public PhraseFinderForm pff;
         public TreeNode mainNode;
         private string LastPhraseLookedUp = "";
+        private bool bExpanded = false;
         public navigate(Form refForm, string DocName)
         {
             InitializeComponent();
@@ -34,6 +35,15 @@ namespace DOC_PhraseFinder
             }
         }
 
+        private void CollapseAll()
+        {
+            foreach (TreeNode node in tvPhrases.Nodes)
+            {
+                node.Collapse();
+                foreach (TreeNode subnode in node.Nodes)
+                    subnode.Collapse();
+            }
+        }
 
         public void ShowTree()
         {
@@ -68,6 +78,8 @@ namespace DOC_PhraseFinder
                                 //dn = new TreeNode();
                                 //dn.Name = k.ToString();
                                 //dn.Text = "next";
+                                if (k > 1)
+                                    c.ForeColor = Color.Red;
                                 c.Tag = k.ToString();
                             }
                             n.Nodes.Add(c);
@@ -96,6 +108,21 @@ namespace DOC_PhraseFinder
         private void btnNext_Click(object sender, EventArgs e)
         {
             btnNext.Visible = pff.ShowNextOnPage(LastPhraseLookedUp);
+        }
+
+        private void btnExpand_Click(object sender, EventArgs e)
+        {
+            if (bExpanded)
+            {
+                CollapseAll();
+                btnExpand.Text = "Expand All";
+            }
+            else
+            {
+                ExpandAll();
+                btnExpand.Text = "Collapse All";
+            }
+            bExpanded = !bExpanded;
         }
     }
 }
