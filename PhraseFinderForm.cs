@@ -17,6 +17,7 @@ using Application = System.Windows.Forms.Application;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using DOC_PhraseFinder.Properties;
+using Microsoft.Office.Core;
 
 //using System.Timers;
 
@@ -53,7 +54,7 @@ namespace DOC_PhraseFinder
         private Microsoft.Office.Interop.Word.Application oWord;
         private Microsoft.Office.Interop.Word.Document oDoc;
 
-        private List<cPhraseTable> phlist = new List<cPhraseTable>();   // table of phrases
+        public List<cPhraseTable> phlist = new List<cPhraseTable>();   // table of phrases
         private cLocalSettings LocalSettings = new cLocalSettings();    // table of settings
         //private static System.Timers.Timer aTimer;
 
@@ -184,15 +185,20 @@ namespace DOC_PhraseFinder
                 while (true)
                 {
                     i = strBig.IndexOf(strPhrase);
-                    if (i == -1) return;
+                    if (i == -1) break;
                     if (cbWholeWord.Checked)
                     {
                         if (!globals.IsWholeWord(strBig, i, strPhrase.Length))
-                            return;
+                            break;
                     }
                     phlist[j].AddPage(p);
                     phlist[j].IncMatch();
+                    sop.SeriesOnPage.Add(strPhrase);
                     strBig = strBig.Remove(i, iWidth);
+                }
+                if(sop.SeriesOnPage.Count> 0)
+                {
+                    phlist[j].FoundInSeries.Add(sop);
                 }
                 return;
             }
@@ -212,7 +218,10 @@ namespace DOC_PhraseFinder
                 }
             }
             if (FoundCount > 0)
+            {
                 phlist[j].FoundInSeries.Add(sop);
+            }
+
         }
 
 
@@ -277,6 +286,16 @@ namespace DOC_PhraseFinder
             return true;
         }
 
+        public void ShowThisOne(string sPhrase, int iPage,int iCnt)
+        {
+            iCurrentPage = iPage;
+            CurrentActivePhrase = sPhrase;
+            iFoundInSentence = 0;
+            iCurrentPagePhraseActive = 0;
+            iCurrentPagePhraseCount = iCnt;
+            bUseFound = false; // sPhrase already has the correct phrase to use
+            ShowFoundPage();
+        }
 
         private void ShowFoundPage()
         {
@@ -374,6 +393,7 @@ namespace DOC_PhraseFinder
                 tbMatches.Text += OutText;
                 TotalMatches = GetMatchCount();
                 tbTotalMatch.Text = TotalMatches.ToString();
+                btnNavigate.Enabled = TotalMatches > 0;
                 //avDoc.Close(1);
                 dgv_phrases.DataSource = phlist.ToArray(); // connect results to the data grid view widget
                 return true;
@@ -827,6 +847,26 @@ namespace DOC_PhraseFinder
             btnNext.Visible = iCurrentPagePhraseCount > 1;
             btnViewDoc.Visible = iCurrentPagePhraseCount > 0;
         }
+        /// <summary>
+        /// displays the next phrase on the selected page and returns false
+        /// if all have been displayed
+        /// </summary>
+        /// <param name="ft"></param>
+        /// <returns></returns>
+        public bool ShowNextOnPage(string ft)
+        {
+            object FindText = ft;
+            object MyCase = !cbIgnoreCase.Checked;  // seems to be just the opposed of what I thought
+            object MyWholeWord = cbWholeWord.Checked;
+            iCurrentPagePhraseActive++;
+            if (iCurrentPagePhraseActive == iCurrentPagePhraseCount)
+            {
+                iCurrentPagePhraseActive = 0;
+                return false;
+            }
+            oWord.Selection.Find.Execute(FindText, MyCase, MyWholeWord);
+            return true;
+        }
 
         private void btnNext_Click(object sender, EventArgs e)
         {
@@ -881,14 +921,27 @@ namespace DOC_PhraseFinder
             if (oDoc != null)
             {
                 tbMatches.Text += "Closing Document...\r\n";
-                oWord.Quit(false);
+                try
+                {
+                    if (oWord != null)
+                        oWord.Quit(false);
+                }
+                catch (Exception ex)
+                {
+                    if (bMyDebug) tbMatches.Text += "error: " + ex.Message + "\r\n";
+                }
                 oDoc = null;
             }
             tbMatches.Text += "Opening Document...\r\n";
             oWord = new Word.Application();
             try
             {
-                oDoc = oWord.Application.Documents.Open(ofd.FileName);
+                object missing = System.Reflection.Missing.Value;
+                object readOnly = true;
+                oDoc = oWord.Application.Documents.Open(ofd.FileName, ref missing,
+                    ref readOnly, ref missing, ref missing, ref missing, ref missing,
+                    ref missing, ref missing, ref missing, ref missing, ref missing,
+                    ref missing, ref missing, ref missing, ref missing);
             }
             catch (Exception ex)
             {
@@ -910,6 +963,13 @@ namespace DOC_PhraseFinder
         private void cbWholeWord_CheckedChanged(object sender, EventArgs e)
         {
             LocalSettings.bWholeWord = cbWholeWord.Checked;
+        }
+
+        private void btnNavigate_Click(object sender, EventArgs e)
+        {
+            navigate SeeDoc = new navigate(this, tbPdfName.Text);
+            SeeDoc.ShowDialog();
+            SeeDoc.Dispose();
         }
     }
 }

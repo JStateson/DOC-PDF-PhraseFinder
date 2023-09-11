@@ -117,28 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="richTextBox1.Text" xml:space="preserve">
-    <value>Use the File menu to open a pdf for analysis
-Click the run button to start a search
-Only phrases checked wil be used
-Click Add Phrase to add a phrase
-Click Remove Phrase to remove highlighted phrases.  The checkbox is not used
-when removing phrases.  You just use the mouse to highlight one lor more rows
-Click SAVE to save your phrases
-Page viewing widgets show up after a successful search
-Click on a phrase to select the pages then click ViewDoc
-The numeric up/down will display the next matching pages
-
-Export/Import is to the clipboard.  Use windows copy and paste
-functions together with notepad.  Alternately use the Setting dialog box
-The  settings allows copy and paste where you can see what
-is being constructed.   Be sure to click save after making any changes.
-
-If you check the MATCH column then that exact phrase must be found.
-Uncheeck if you want to find any combination of words in sentence.
-You must have more than one word to disable exact matching.</value>
-  </data>
-  <metadata name="$this.Locked" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
 </root>

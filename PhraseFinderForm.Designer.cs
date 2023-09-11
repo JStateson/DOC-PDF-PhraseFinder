@@ -31,7 +31,7 @@ namespace DOC_PhraseFinder
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            DataGridViewCellStyle dataGridViewCellStyle7 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PhraseFinderForm));
             MStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
@@ -48,12 +48,15 @@ namespace DOC_PhraseFinder
             btnNext = new Button();
             dgv_phrases = new DataGridView();
             gbPageCtrl = new GroupBox();
+            btnNavigate = new Button();
             tbViewPage = new TextBox();
             btnViewDoc = new Button();
             cbWholeWord = new CheckBox();
             groupBox1 = new GroupBox();
-            tbTotalMatch = new TextBox();
+            label2 = new Label();
+            label1 = new Label();
             tbNumPages = new TextBox();
+            tbTotalMatch = new TextBox();
             tbPdfName = new TextBox();
             groupBox6 = new GroupBox();
             searchPanel = new GroupBox();
@@ -69,8 +72,6 @@ namespace DOC_PhraseFinder
             btnSelectAll = new Button();
             groupBox8 = new GroupBox();
             tbMatches = new TextBox();
-            label1 = new Label();
-            label2 = new Label();
             MStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudPage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgv_phrases).BeginInit();
@@ -179,7 +180,7 @@ namespace DOC_PhraseFinder
             // 
             // btnNext
             // 
-            btnNext.Location = new Point(87, 96);
+            btnNext.Location = new Point(39, 92);
             btnNext.Name = "btnNext";
             btnNext.Size = new Size(126, 29);
             btnNext.TabIndex = 3;
@@ -191,14 +192,14 @@ namespace DOC_PhraseFinder
             // 
             // dgv_phrases
             // 
-            dataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle7.BackColor = SystemColors.Control;
-            dataGridViewCellStyle7.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle7.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle7.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = DataGridViewTriState.True;
-            dgv_phrases.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
+            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle2.BackColor = SystemColors.Control;
+            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
+            dgv_phrases.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             dgv_phrases.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgv_phrases.Location = new Point(302, 38);
             dgv_phrases.Name = "dgv_phrases";
@@ -210,6 +211,7 @@ namespace DOC_PhraseFinder
             // 
             // gbPageCtrl
             // 
+            gbPageCtrl.Controls.Add(btnNavigate);
             gbPageCtrl.Controls.Add(btnNext);
             gbPageCtrl.Controls.Add(tbViewPage);
             gbPageCtrl.Controls.Add(nudPage);
@@ -223,6 +225,20 @@ namespace DOC_PhraseFinder
             gbPageCtrl.Text = "Page View Control (page/word)";
             toolTip1.SetToolTip(gbPageCtrl, "Display the next or the previous\r\npage that had the phrase");
             gbPageCtrl.Visible = false;
+            // 
+            // btnNavigate
+            // 
+            btnNavigate.Enabled = false;
+            btnNavigate.Font = new Font("Segoe UI", 9.75F, FontStyle.Bold, GraphicsUnit.Point);
+            btnNavigate.ForeColor = Color.Green;
+            btnNavigate.Location = new Point(190, 92);
+            btnNavigate.Name = "btnNavigate";
+            btnNavigate.Size = new Size(75, 29);
+            btnNavigate.TabIndex = 4;
+            btnNavigate.Text = "Navigate";
+            toolTip1.SetToolTip(btnNavigate, "move this page to corner of screen\r\nbefore clicking button so the document\r\nis more visible");
+            btnNavigate.UseVisualStyleBackColor = true;
+            btnNavigate.Click += btnNavigate_Click;
             // 
             // tbViewPage
             // 
@@ -268,12 +284,23 @@ namespace DOC_PhraseFinder
             groupBox1.TabIndex = 1;
             groupBox1.TabStop = false;
             // 
-            // tbTotalMatch
+            // label2
             // 
-            tbTotalMatch.Location = new Point(190, 97);
-            tbTotalMatch.Name = "tbTotalMatch";
-            tbTotalMatch.Size = new Size(58, 23);
-            tbTotalMatch.TabIndex = 1;
+            label2.AutoSize = true;
+            label2.Location = new Point(39, 100);
+            label2.Name = "label2";
+            label2.Size = new Size(117, 15);
+            label2.TabIndex = 3;
+            label2.Text = "Total Matches Found";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(39, 66);
+            label1.Name = "label1";
+            label1.Size = new Size(103, 15);
+            label1.TabIndex = 2;
+            label1.Text = "Total Pages In Doc";
             // 
             // tbNumPages
             // 
@@ -281,6 +308,13 @@ namespace DOC_PhraseFinder
             tbNumPages.Name = "tbNumPages";
             tbNumPages.Size = new Size(58, 23);
             tbNumPages.TabIndex = 0;
+            // 
+            // tbTotalMatch
+            // 
+            tbTotalMatch.Location = new Point(190, 97);
+            tbTotalMatch.Name = "tbTotalMatch";
+            tbTotalMatch.Size = new Size(58, 23);
+            tbTotalMatch.TabIndex = 1;
             // 
             // tbPdfName
             // 
@@ -451,24 +485,6 @@ namespace DOC_PhraseFinder
             tbMatches.TabIndex = 5;
             tbMatches.Text = resources.GetString("tbMatches.Text");
             // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(39, 66);
-            label1.Name = "label1";
-            label1.Size = new Size(103, 15);
-            label1.TabIndex = 2;
-            label1.Text = "Total Pages In Doc";
-            // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(39, 100);
-            label2.Name = "label2";
-            label2.Size = new Size(117, 15);
-            label2.TabIndex = 3;
-            label2.Text = "Total Matches Found";
-            // 
             // PhraseFinderForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -546,5 +562,6 @@ namespace DOC_PhraseFinder
         private Button btnRunSearch;
         private Label label2;
         private Label label1;
+        private Button btnNavigate;
     }
 }

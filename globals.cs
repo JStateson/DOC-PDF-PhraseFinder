@@ -197,9 +197,12 @@ namespace DOC_PhraseFinder
         public bool bWholeWord = true;
     }
 
+    // cSeriesOnPage is obtuse code where I added it to FoundOnPage.  needs to be
+    // cleaned up as there is no need for a list of lists, only a list of phrases
+    // to do todo to do todo 9/11/2023 not sure what is happening, sorry
     public class cSeriesOnPage
     {
-        public List<string> SeriesOnPage = new List<string>();
+        public List<string> SeriesOnPage = new List<string>(); 
     }
 
     public class cPhraseTable
