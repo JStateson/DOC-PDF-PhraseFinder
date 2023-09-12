@@ -124,5 +124,10 @@ namespace DOC_PhraseFinder
             }
             bExpanded = !bExpanded;
         }
+
+        private void navigate_Deactivate(object sender, EventArgs e)
+        {
+            pff.RestoreMainForm();
+        }
     }
 }

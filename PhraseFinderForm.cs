@@ -955,6 +955,7 @@ namespace DOC_PhraseFinder
             // .wdReadingView did not allow the file to be opened !!!
             // these worked .wdNormalView .wdPrintView;
             //oDoc.ActiveWindow.SetFocus();
+            //this.BringToFront(); // did not work
             oDoc.Activate();
             if (bMyDebug)
                 tbMatches.Text += "Document Open for searching\r\n";
@@ -970,11 +971,17 @@ namespace DOC_PhraseFinder
             LocalSettings.bWholeWord = cbWholeWord.Checked;
         }
 
+        public void RestoreMainForm()
+        {
+            WindowState = FormWindowState.Normal;
+        }
+
         private void btnNavigate_Click(object sender, EventArgs e)
         {
             navigate SeeDoc = new navigate(this, tbPdfName.Text);
-            SeeDoc.ShowDialog();
-            SeeDoc.Dispose();
+            SeeDoc.Show(); // .ShowDialog();
+            WindowState = FormWindowState.Minimized;
+            //SeeDoc.Dispose();
         }
     }
 }
