@@ -275,17 +275,6 @@ namespace DOC_PhraseFinder
             return true;
         }
 
-        public void ShowThisOne(string sPhrase, int iPage, int iCnt)
-        {
-            iCurrentPage = iPage;
-            CurrentActivePhrase = sPhrase;
-            iFoundInSentence = 0;
-            iCurrentPagePhraseActive = 0;
-            iCurrentPagePhraseCount = iCnt;
-            bUseFound = false; // sPhrase already has the correct phrase to use
-            ShowFoundPage();
-        }
-
         private void ShowFoundPage()
         {
             if (iCurrentPage < 0) return;
@@ -333,9 +322,6 @@ namespace DOC_PhraseFinder
             ShowFoundPage();
             return;
         }
-
-        //AcroRd32.exe /A "zoom=50&navpanes=1=OpenActions&search=batch" PdfFile
-        // above search for the phrase "batch" is another way
 
 
         private bool RunSearch()
@@ -570,13 +556,35 @@ namespace DOC_PhraseFinder
             nudPage.Visible = ThisPageList.Length > 1;      // only show numeric up/down if more than 1 page
             btnNext.Visible = iCurrentPagePhraseCount > 0;
             // cannot let the event fire when resetting the value of the widget
-
             nudPage.Value = 0;
             nudPage.ValueChanged += nudPage_ValueChanged;
+
+        }
+
+        public void ShowThisOne(string sPhrase, int iPage, int iCnt)
+        {
+            iCurrentPage = iPage;
+            CurrentActivePhrase = sPhrase;
+            iFoundInSentence = 0;
+            iCurrentPagePhraseActive = 0;
+            iCurrentPagePhraseCount = iCnt;
+            bUseFound = false; // sPhrase already has the correct phrase to use
             ShowFoundPage();
         }
 
-
+        public void SetPageList(int iRow)
+        {
+            iFoundInSentence = 0;
+            iCurrentRow = iRow;
+            ThisPageList = phlist[iRow].strPages.Split(',').Select(int.Parse).ToArray();
+            iCurrentPage = ThisPageList[0];
+            tbViewPage.Text = iCurrentPage.ToString();
+            CurrentActivePhrase = phlist[iRow].Phrase; // this is used if match must be exact
+            iCurrentPagePhraseActive = 0; // start of first (at least one) phrase found on the page
+            iCurrentPagePhraseCount = phlist[iRow].WordsOnPage[0];
+            bUseFound = !phlist[iRow].Match;  // if not exact match then the phrase can change
+            SetNumeric_UpDn_Page();
+        }
 
         /// <summary>
         /// Get the list of pages that contains the wanted phrase and update the
@@ -593,14 +601,8 @@ namespace DOC_PhraseFinder
             iFoundInSentence = 0;
             if (phlist[iCurrentRow].strPages != "")
             {
-                ThisPageList = phlist[iCurrentRow].strPages.Split(',').Select(int.Parse).ToArray();
-                iCurrentPage = ThisPageList[0];
-                tbViewPage.Text = iCurrentPage.ToString();
-                CurrentActivePhrase = phlist[iCurrentRow].Phrase; // this is used if match must be exact
-                iCurrentPagePhraseActive = 0; // start of first (at least one) phrase found on the page
-                iCurrentPagePhraseCount = phlist[iCurrentRow].WordsOnPage[0];
-                bUseFound = !phlist[iCurrentRow].Match;  // if not exact match then the phrase can change
-                SetNumeric_UpDn_Page();
+                SetPageList(iCurrentRow);
+                ShowFoundPage();
                 AllowNextPhrase();
             }
         }

@@ -85,7 +85,7 @@
             Controls.Add(tvPhrases);
             Name = "navigate";
             Text = "navigate";
-            Deactivate += navigate_Deactivate;
+            FormClosing += navigate_FormClosing;
             ResumeLayout(false);
             PerformLayout();
         }

@@ -31,7 +31,7 @@ namespace DOC_PhraseFinder
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            DataGridViewCellStyle dataGridViewCellStyle2 = new DataGridViewCellStyle();
+            DataGridViewCellStyle dataGridViewCellStyle1 = new DataGridViewCellStyle();
             MStrip = new MenuStrip();
             fileToolStripMenuItem = new ToolStripMenuItem();
             OpenWord = new ToolStripMenuItem();
@@ -58,6 +58,7 @@ namespace DOC_PhraseFinder
             tbTotalMatch = new TextBox();
             tbPdfName = new TextBox();
             groupBox6 = new GroupBox();
+            pictureBox1 = new PictureBox();
             searchPanel = new GroupBox();
             pbarLoading = new ProgressBar();
             btnRunSearch = new Button();
@@ -69,18 +70,17 @@ namespace DOC_PhraseFinder
             btnUncheckall = new Button();
             btnSelectAll = new Button();
             groupBox8 = new GroupBox();
-            pictureBox1 = new PictureBox();
             MStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)nudPage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)dgv_phrases).BeginInit();
             gbPageCtrl.SuspendLayout();
             groupBox1.SuspendLayout();
             groupBox6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             searchPanel.SuspendLayout();
             groupBox10.SuspendLayout();
             groupBox9.SuspendLayout();
             groupBox8.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
             // MStrip
@@ -192,14 +192,14 @@ namespace DOC_PhraseFinder
             // 
             // dgv_phrases
             // 
-            dataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle2.BackColor = SystemColors.Control;
-            dataGridViewCellStyle2.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            dataGridViewCellStyle2.ForeColor = SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = DataGridViewTriState.True;
-            dgv_phrases.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.BackColor = SystemColors.Control;
+            dataGridViewCellStyle1.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
+            dataGridViewCellStyle1.ForeColor = SystemColors.WindowText;
+            dataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
+            dgv_phrases.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgv_phrases.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             dgv_phrases.Location = new Point(388, 116);
             dgv_phrases.Name = "dgv_phrases";
@@ -345,6 +345,15 @@ namespace DOC_PhraseFinder
             groupBox6.TabStop = false;
             groupBox6.Text = "Phrase Searching";
             // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = Properties.Resources.FNS;
+            pictureBox1.Location = new Point(19, 514);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(256, 107);
+            pictureBox1.TabIndex = 9;
+            pictureBox1.TabStop = false;
+            // 
             // searchPanel
             // 
             searchPanel.Controls.Add(pbarLoading);
@@ -468,15 +477,6 @@ namespace DOC_PhraseFinder
             groupBox8.TabStop = false;
             groupBox8.Text = "Phrases";
             // 
-            // pictureBox1
-            // 
-            pictureBox1.Image = Properties.Resources.FNS;
-            pictureBox1.Location = new Point(19, 514);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(256, 107);
-            pictureBox1.TabIndex = 9;
-            pictureBox1.TabStop = false;
-            // 
             // PhraseFinderForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -485,9 +485,8 @@ namespace DOC_PhraseFinder
             ClientSize = new Size(899, 697);
             Controls.Add(groupBox6);
             Controls.Add(MStrip);
-            FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            FormBorderStyle = FormBorderStyle.FixedDialog;
             MainMenuStrip = MStrip;
-            MaximizeBox = false;
             MinimizeBox = false;
             Name = "PhraseFinderForm";
             Text = "USDA/FNS  -  Phrase Finder for Word Documents";
@@ -501,12 +500,12 @@ namespace DOC_PhraseFinder
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             groupBox6.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             searchPanel.ResumeLayout(false);
             groupBox10.ResumeLayout(false);
             groupBox10.PerformLayout();
             groupBox9.ResumeLayout(false);
             groupBox8.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }

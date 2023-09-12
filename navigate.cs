@@ -50,16 +50,16 @@ namespace DOC_PhraseFinder
             TreeNode n, c, dn;
             string[] ThesePages;
             cSeriesOnPage sop;
-            int m = 0, i = 1;
+            int m = 0, i = -1;
             foreach (cPhraseTable pt in pff.phlist)
             {
+                i++;
                 if (pt.Select)
                 {
                     m = pt.FoundInSeries.Count;
                     if (m == 0) continue;
                     n = new TreeNode();
                     n.Name = i.ToString();
-                    i++;
                     n.Text = pt.Phrase;
                     if (m > 0)
                     {
@@ -82,6 +82,7 @@ namespace DOC_PhraseFinder
                                     c.ForeColor = Color.Red;
                                 c.Tag = k.ToString();
                             }
+                            c.ToolTipText = i.ToString(); // this is the row number in phlist
                             n.Nodes.Add(c);
                         }
                     }
@@ -102,6 +103,8 @@ namespace DOC_PhraseFinder
                 int iCnt = Convert.ToInt32((string)e.Node.Tag);
                 LastPhraseLookedUp = sPhrase.Substring(5);
                 pff.ShowThisOne(LastPhraseLookedUp, iPage, iCnt);
+                int iRow = Convert.ToInt32(e.Node.ToolTipText);
+                pff.SetPageList(iRow);
             }
         }
 
@@ -125,7 +128,7 @@ namespace DOC_PhraseFinder
             bExpanded = !bExpanded;
         }
 
-        private void navigate_Deactivate(object sender, EventArgs e)
+        private void navigate_FormClosing(object sender, FormClosingEventArgs e)
         {
             pff.RestoreMainForm();
         }
