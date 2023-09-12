@@ -951,6 +951,9 @@ namespace DOC_PhraseFinder
             }
             oWord.Visible = false;
             oDoc.ActiveWindow.View.Type = WdViewType.wdPrintView;
+            // wdWebView caused search not to find items!!!!
+            // .wdReadingView did not allow the file to be opened !!!
+            // these worked .wdNormalView .wdPrintView;
             //oDoc.ActiveWindow.SetFocus();
             oDoc.Activate();
             if (bMyDebug)
