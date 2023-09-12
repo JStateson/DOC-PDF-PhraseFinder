@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Office.Core;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -44,6 +45,11 @@ namespace DOC_PhraseFinder
                     subnode.Collapse();
             }
         }
+            
+        private string FormShow(int cnt)
+        {
+            return "SHOW[" + cnt.ToString() + "]:";
+        }
 
         public void ShowTree()
         {
@@ -70,9 +76,10 @@ namespace DOC_PhraseFinder
                             c = new TreeNode();
                             c.Name = ThesePages[j];
                             sop = pt.FoundInSeries[j];
-                            c.Text = "SHOW:" + sop.SeriesOnPage[0];
-                            // may be more than 1 on this page
                             int k = sop.SeriesOnPage.Count;
+                            c.Text = FormShow(k) + sop.SeriesOnPage[0];
+                            // may be more than 1 on this page
+
                             if (k > 0)
                             {
                                 //dn = new TreeNode();
@@ -95,13 +102,13 @@ namespace DOC_PhraseFinder
         private void tvPhrases_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             string sPhrase = e.Node.Text;
-            if (sPhrase.Substring(0, 5) == "SHOW:")
+            if (sPhrase.Substring(0, 5) == "SHOW[")
             {
+                int iActualPhrase = 1+sPhrase.IndexOf(":");
                 int iPage = Convert.ToInt32(e.Node.Name);
                 btnNext.Visible = ((string)e.Node.Tag != "1");
-                //int iCnt = phlist[iCurrentRow].WordsOnPage[Convert.ToInt32(nudPage.Value)];
                 int iCnt = Convert.ToInt32((string)e.Node.Tag);
-                LastPhraseLookedUp = sPhrase.Substring(5);
+                LastPhraseLookedUp = sPhrase.Substring(iActualPhrase);
                 pff.ShowThisOne(LastPhraseLookedUp, iPage, iCnt);
                 int iRow = Convert.ToInt32(e.Node.ToolTipText);
                 pff.SetPageList(iRow);

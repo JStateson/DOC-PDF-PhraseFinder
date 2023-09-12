@@ -165,7 +165,9 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(753, 519);
             Controls.Add(groupBox2);
-            FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            FormBorderStyle = FormBorderStyle.Fixed3D;
+            MaximizeBox = false;
+            MinimizeBox = false;
             Name = "InitialParams";
             Text = "InitialParams";
             groupBox2.ResumeLayout(false);

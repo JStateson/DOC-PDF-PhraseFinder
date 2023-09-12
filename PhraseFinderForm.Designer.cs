@@ -58,7 +58,6 @@ namespace DOC_PhraseFinder
             tbTotalMatch = new TextBox();
             tbPdfName = new TextBox();
             groupBox6 = new GroupBox();
-            pictureBox1 = new PictureBox();
             searchPanel = new GroupBox();
             pbarLoading = new ProgressBar();
             btnRunSearch = new Button();
@@ -76,7 +75,6 @@ namespace DOC_PhraseFinder
             gbPageCtrl.SuspendLayout();
             groupBox1.SuspendLayout();
             groupBox6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             searchPanel.SuspendLayout();
             groupBox10.SuspendLayout();
             groupBox9.SuspendLayout();
@@ -88,7 +86,7 @@ namespace DOC_PhraseFinder
             MStrip.Items.AddRange(new ToolStripItem[] { fileToolStripMenuItem, helpToolStripMenuItem, settingsToolStripMenuItem });
             MStrip.Location = new Point(0, 0);
             MStrip.Name = "MStrip";
-            MStrip.Size = new Size(899, 24);
+            MStrip.Size = new Size(811, 24);
             MStrip.TabIndex = 0;
             MStrip.Text = "menuStrip1";
             // 
@@ -201,7 +199,7 @@ namespace DOC_PhraseFinder
             dataGridViewCellStyle1.WrapMode = DataGridViewTriState.True;
             dgv_phrases.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             dgv_phrases.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgv_phrases.Location = new Point(388, 116);
+            dgv_phrases.Location = new Point(295, 116);
             dgv_phrases.Name = "dgv_phrases";
             dgv_phrases.RowTemplate.Height = 25;
             dgv_phrases.Size = new Size(473, 505);
@@ -217,7 +215,7 @@ namespace DOC_PhraseFinder
             gbPageCtrl.Controls.Add(nudPage);
             gbPageCtrl.Controls.Add(btnViewDoc);
             gbPageCtrl.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point);
-            gbPageCtrl.Location = new Point(388, 31);
+            gbPageCtrl.Location = new Point(295, 22);
             gbPageCtrl.Name = "gbPageCtrl";
             gbPageCtrl.Size = new Size(473, 69);
             gbPageCtrl.TabIndex = 6;
@@ -265,7 +263,7 @@ namespace DOC_PhraseFinder
             cbWholeWord.AutoSize = true;
             cbWholeWord.Checked = true;
             cbWholeWord.CheckState = CheckState.Checked;
-            cbWholeWord.Location = new Point(22, 64);
+            cbWholeWord.Location = new Point(128, 23);
             cbWholeWord.Name = "cbWholeWord";
             cbWholeWord.Size = new Size(92, 19);
             cbWholeWord.TabIndex = 6;
@@ -280,9 +278,9 @@ namespace DOC_PhraseFinder
             groupBox1.Controls.Add(tbNumPages);
             groupBox1.Controls.Add(tbTotalMatch);
             groupBox1.Controls.Add(tbPdfName);
-            groupBox1.Location = new Point(13, 362);
+            groupBox1.Location = new Point(7, 163);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(206, 122);
+            groupBox1.Size = new Size(230, 122);
             groupBox1.TabIndex = 1;
             groupBox1.TabStop = false;
             // 
@@ -313,7 +311,7 @@ namespace DOC_PhraseFinder
             // 
             // tbTotalMatch
             // 
-            tbTotalMatch.Location = new Point(129, 82);
+            tbTotalMatch.Location = new Point(126, 82);
             tbTotalMatch.Name = "tbTotalMatch";
             tbTotalMatch.Size = new Size(58, 23);
             tbTotalMatch.TabIndex = 1;
@@ -330,7 +328,6 @@ namespace DOC_PhraseFinder
             // 
             // groupBox6
             // 
-            groupBox6.Controls.Add(pictureBox1);
             groupBox6.Controls.Add(gbPageCtrl);
             groupBox6.Controls.Add(searchPanel);
             groupBox6.Controls.Add(groupBox10);
@@ -340,19 +337,10 @@ namespace DOC_PhraseFinder
             groupBox6.Controls.Add(dgv_phrases);
             groupBox6.Location = new Point(12, 42);
             groupBox6.Name = "groupBox6";
-            groupBox6.Size = new Size(874, 643);
+            groupBox6.Size = new Size(788, 643);
             groupBox6.TabIndex = 4;
             groupBox6.TabStop = false;
             groupBox6.Text = "Phrase Searching";
-            // 
-            // pictureBox1
-            // 
-            pictureBox1.Image = Properties.Resources.FNS;
-            pictureBox1.Location = new Point(19, 514);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(256, 107);
-            pictureBox1.TabIndex = 9;
-            pictureBox1.TabStop = false;
             // 
             // searchPanel
             // 
@@ -403,9 +391,9 @@ namespace DOC_PhraseFinder
             // 
             groupBox10.Controls.Add(cbWholeWord);
             groupBox10.Controls.Add(cbIgnoreCase);
-            groupBox10.Location = new Point(13, 180);
+            groupBox10.Location = new Point(7, 300);
             groupBox10.Name = "groupBox10";
-            groupBox10.Size = new Size(131, 127);
+            groupBox10.Size = new Size(268, 63);
             groupBox10.TabIndex = 5;
             groupBox10.TabStop = false;
             groupBox10.Text = "Local Settings";
@@ -428,7 +416,7 @@ namespace DOC_PhraseFinder
             groupBox9.Controls.Add(btnInvert);
             groupBox9.Controls.Add(btnUncheckall);
             groupBox9.Controls.Add(btnSelectAll);
-            groupBox9.Location = new Point(229, 338);
+            groupBox9.Location = new Point(147, 388);
             groupBox9.Name = "groupBox9";
             groupBox9.Size = new Size(127, 146);
             groupBox9.TabIndex = 4;
@@ -470,7 +458,7 @@ namespace DOC_PhraseFinder
             groupBox8.Controls.Add(btnSave);
             groupBox8.Controls.Add(btnRemove);
             groupBox8.Controls.Add(btnAdd);
-            groupBox8.Location = new Point(229, 181);
+            groupBox8.Location = new Point(6, 388);
             groupBox8.Name = "groupBox8";
             groupBox8.Size = new Size(127, 146);
             groupBox8.TabIndex = 2;
@@ -482,12 +470,12 @@ namespace DOC_PhraseFinder
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackgroundImageLayout = ImageLayout.Zoom;
-            ClientSize = new Size(899, 697);
+            ClientSize = new Size(811, 697);
             Controls.Add(groupBox6);
             Controls.Add(MStrip);
-            FormBorderStyle = FormBorderStyle.FixedDialog;
+            FormBorderStyle = FormBorderStyle.Fixed3D;
             MainMenuStrip = MStrip;
-            MinimizeBox = false;
+            MaximizeBox = false;
             Name = "PhraseFinderForm";
             Text = "USDA/FNS  -  Phrase Finder for Word Documents";
             FormClosing += PhraseFinderForm_FormClosing;
@@ -500,7 +488,6 @@ namespace DOC_PhraseFinder
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
             groupBox6.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             searchPanel.ResumeLayout(false);
             groupBox10.ResumeLayout(false);
             groupBox10.PerformLayout();
@@ -549,6 +536,5 @@ namespace DOC_PhraseFinder
         private Label label2;
         private Label label1;
         private Button btnNavigate;
-        private PictureBox pictureBox1;
     }
 }

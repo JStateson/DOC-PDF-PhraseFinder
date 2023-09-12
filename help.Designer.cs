@@ -46,7 +46,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(615, 393);
             Controls.Add(richTextBox1);
-            FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            FormBorderStyle = FormBorderStyle.Fixed3D;
+            MaximizeBox = false;
             Name = "help";
             Text = "Help";
             ResumeLayout(false);
