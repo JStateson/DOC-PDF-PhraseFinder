@@ -34,7 +34,6 @@ namespace DOC_PhraseFinder
 
     public partial class PhraseFinderForm : Form
     {
-        private bool bMyDebug = false;  // enable to see informational messages
         private bool bAllExact = true;    // if false then we need to turn the sentences into a string[]
         private int[] ThisPageList;
         private int iCurrentPage = 0;
@@ -196,7 +195,7 @@ namespace DOC_PhraseFinder
                     sop.SeriesOnPage.Add(strPhrase);
                     strBig = strBig.Remove(i, iWidth);
                 }
-                if(sop.SeriesOnPage.Count> 0)
+                if (sop.SeriesOnPage.Count > 0)
                 {
                     phlist[j].FoundInSeries.Add(sop);
                 }
@@ -251,9 +250,7 @@ namespace DOC_PhraseFinder
             }
             catch (Exception ex)
             {
-                if (bMyDebug)
-                    tbMatches.Text += ex.Message + "\r\n";
-                MessageBox.Show("You may have closed the document\r\nExit this program and start over\r\nYou may have to terminate microsoft word", "ERROR-1"); ;
+                MessageBox.Show("You may have closed the document\r\nExit this program and start over\r\nYou may have to terminate microsoft word\r\n" + ex.Message, "ERROR-1"); ;
                 return false;
             }
             // Get end position of current page                                
@@ -267,15 +264,7 @@ namespace DOC_PhraseFinder
             {
                 aPage = oDoc.Range(ref Start).Text;
             }
-            if (bMyDebug)
-            {
-                string strTemp = "";
-                if (aPage.Length >= 20)
-                    strTemp = aPage.Substring(0, 20);
-                else strTemp = aPage.ToString();
 
-                tbMatches.Text += p.ToString("D4") + ": " + aPage.Length.ToString("D5") + " " + strTemp + "\r\n";
-            }
             if (cbIgnoreCase.Checked) aPage = aPage.ToLower();
             if (!bAllExact) aPages = globals.StrToStrs(aPage);
             for (int i = 0; i < NumPhrases; i++)
@@ -286,7 +275,7 @@ namespace DOC_PhraseFinder
             return true;
         }
 
-        public void ShowThisOne(string sPhrase, int iPage,int iCnt)
+        public void ShowThisOne(string sPhrase, int iPage, int iCnt)
         {
             iCurrentPage = iPage;
             CurrentActivePhrase = sPhrase;
@@ -315,9 +304,7 @@ namespace DOC_PhraseFinder
             }
             catch (Exception ex)
             {
-                if (bMyDebug)
-                    tbMatches.Text += "error " + ex.Message + "\r\n";
-                MessageBox.Show("Document probably closed, please exit and restart", "ERROR");
+                MessageBox.Show("Document probably closed, please exit and restart\r\n" + ex.Message, "ERROR");
                 return;
             }
             oWord.Visible = true;
@@ -328,8 +315,6 @@ namespace DOC_PhraseFinder
             {
                 FindText = phlist[iCurrentRow].FoundInSeries[iFoundInSentence].SeriesOnPage[iCurrentPagePhraseActive];
             }
-            if (bMyDebug)
-                tbMatches.Text += "looking for " + FindText + "\r\n";
             oWord.Selection.Find.ClearFormatting();
             oWord.Selection.Find.Execute(FindText, MyCase, MyWholeWord);
         }
@@ -361,14 +346,11 @@ namespace DOC_PhraseFinder
                 TotalMatches = 0;
                 iNullCount = 0;
                 iCurrentPage = 1;
-                tbMatches.Text += "Searching ...\r\n";
-
                 for (int p = 0; p < TotalDocPages; p++)
                 {
                     bool bOK = SearchPage(p);
                     if (!bOK)
                     {
-                        tbMatches.Text += "problem reading doc at page " + p.ToString();
                         return false;
                     }
                     AllowProgressEvent();
@@ -389,12 +371,9 @@ namespace DOC_PhraseFinder
                         OutText += "Total Duplicate pages: " + phlist[i].iDupPageCnt + "\r\n\r\n";
                     }
                 }
-                if (iNullCount > 0) tbMatches.Text += "Null words found:" + iNullCount.ToString() + "\r\n";
-                tbMatches.Text += OutText;
                 TotalMatches = GetMatchCount();
                 tbTotalMatch.Text = TotalMatches.ToString();
                 btnNavigate.Enabled = TotalMatches > 0;
-                //avDoc.Close(1);
                 dgv_phrases.DataSource = phlist.ToArray(); // connect results to the data grid view widget
                 return true;
             }
@@ -462,7 +441,6 @@ namespace DOC_PhraseFinder
                 cpt.FoundInSeries.Clear();
                 i++;
             }
-            tbMatches.Clear();
         }
 
         private void FormSortIndex()
@@ -909,10 +887,8 @@ namespace DOC_PhraseFinder
             ofd.DefaultExt = "*docx";
             ofd.InitialDirectory = LocalSettings.strLastFolder;
             ofd.Filter = "(Word Doc)|*.docx";
-            tbMatches.Text = "";
             if (DialogResult.OK != ofd.ShowDialog())
             {
-                tbMatches.Text = "ERROR:no DOCX file found";
                 searchPanel.Enabled = false;
                 return;
             }
@@ -920,7 +896,6 @@ namespace DOC_PhraseFinder
             LocalSettings.strLastFolder = Path.GetDirectoryName(ofd.FileName);
             if (oDoc != null)
             {
-                tbMatches.Text += "Closing Document...\r\n";
                 try
                 {
                     if (oWord != null)
@@ -928,11 +903,9 @@ namespace DOC_PhraseFinder
                 }
                 catch (Exception ex)
                 {
-                    if (bMyDebug) tbMatches.Text += "error: " + ex.Message + "\r\n";
                 }
                 oDoc = null;
             }
-            tbMatches.Text += "Opening Document...\r\n";
             oWord = new Word.Application();
             try
             {
@@ -945,8 +918,7 @@ namespace DOC_PhraseFinder
             }
             catch (Exception ex)
             {
-                if (bMyDebug) tbMatches.Text += "error: " + ex.Message + "\r\n";
-                MessageBox.Show("You may have closed the document, please exit the program", "ERROR-3");
+                MessageBox.Show("You may have closed the document, please exit the program\r\n" + ex.Message, "ERROR-3");
                 return;
             }
             oWord.Visible = false;
@@ -957,8 +929,6 @@ namespace DOC_PhraseFinder
             //oDoc.ActiveWindow.SetFocus();
             //this.BringToFront(); // did not work
             oDoc.Activate();
-            if (bMyDebug)
-                tbMatches.Text += "Document Open for searching\r\n";
             searchPanel.Enabled = GetPageCount();
             gbPageCtrl.Visible = searchPanel.Enabled;
 
@@ -974,14 +944,15 @@ namespace DOC_PhraseFinder
         public void RestoreMainForm()
         {
             WindowState = FormWindowState.Normal;
+            btnNavigate.Enabled = true;
         }
 
         private void btnNavigate_Click(object sender, EventArgs e)
         {
             navigate SeeDoc = new navigate(this, tbPdfName.Text);
-            SeeDoc.Show(); // .ShowDialog();
+            SeeDoc.Show();
             WindowState = FormWindowState.Minimized;
-            //SeeDoc.Dispose();
+            btnNavigate.Enabled = false;
         }
     }
 }

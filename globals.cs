@@ -49,7 +49,7 @@ namespace DOC_PhraseFinder
         {
 
             string strBad = "";
-            int j, n = BadLetters.Length;
+            int n = BadLetters.Length;
             for (int i = 0; i < n; i++)
             {
                 if (aPhrase.Contains(BadLetters.Substring(i, 1)))
